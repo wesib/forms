@@ -1,4 +1,5 @@
 import { inFormElement, InGroup, inGroup } from '@frontmeans/input-aspects';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { afterThe } from '@proc7ts/fun-events';
 import { noop } from '@proc7ts/primitives';
 import { ComponentContext } from '@wesib/wesib';
@@ -63,7 +64,7 @@ describe('@OnSubmit', () => {
   });
   it('does not submit when there is no form', async () => {
 
-    const defaultSubmit = jest.fn(e => e.preventDefault());
+    const defaultSubmit = jest.fn((e: Event) => e.preventDefault());
 
     formElement.addEventListener('submit', defaultSubmit);
 
