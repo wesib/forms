@@ -1,3 +1,4 @@
+import { describe, expect, it } from '@jest/globals';
 import { FeatureDef__symbol } from '@wesib/wesib';
 import { AbstractFormPreset } from './abstract-form-preset';
 

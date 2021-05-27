@@ -11,6 +11,7 @@ import {
   inValue,
 } from '@frontmeans/input-aspects';
 import { newManualRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ContextKey__symbol, Contextual__symbol } from '@proc7ts/context-values';
 import { ContextUpKey } from '@proc7ts/context-values/updatable';
 import { afterSupplied, trackValue, ValueTracker } from '@proc7ts/fun-events';
@@ -21,7 +22,7 @@ import {
   ComponentSlot,
   DefaultNamespaceAliaser,
 } from '@wesib/wesib';
-import { MockElement, testElement } from '@wesib/wesib/testing';
+import { MockElement, MockFn, MockObject, testElement } from '@wesib/wesib/testing';
 import { Field } from './field';
 import { FieldShare } from './field.share';
 import { Form } from './form';
@@ -134,8 +135,8 @@ describe('FormPreset', () => {
 
     expect(field.control?.it).toBe('test1');
 
-    const rules: jest.Mocked<FormPreset.Spec> = {
-      setupField: jest.fn(),
+    const rules: MockObject<FormPreset.Spec> = {
+      setupField: jest.fn<void, []>(),
     };
 
     ruleTracker.it = rules;
@@ -176,8 +177,8 @@ describe('FormPreset', () => {
 
     expect(form.control?.it.counter).toBe(1);
 
-    const rules: jest.Mocked<FormPreset.Spec> = {
-      setupForm: jest.fn(),
+    const rules: MockObject<FormPreset.Spec> = {
+      setupForm: jest.fn<void, []>(),
     };
 
     ruleTracker.it = rules;
@@ -187,7 +188,7 @@ describe('FormPreset', () => {
 
   describe('defaults', () => {
 
-    let mockRenderScheduler: jest.Mock<ReturnType<RenderScheduler>, Parameters<RenderScheduler>>;
+    let mockRenderScheduler: MockFn<RenderScheduler>;
     let context: ComponentContext;
     let form: Form;
     let field: Field<string>;
