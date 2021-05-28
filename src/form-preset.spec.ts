@@ -22,7 +22,7 @@ import {
   ComponentSlot,
   DefaultNamespaceAliaser,
 } from '@wesib/wesib';
-import { MockElement, MockFn, MockObject, testElement } from '@wesib/wesib/testing';
+import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Field } from './field';
 import { FieldShare } from './field.share';
 import { Form } from './form';
@@ -30,6 +30,7 @@ import { FormPreset } from './form-preset';
 import { FormShare } from './form.share';
 import { SharedField } from './shared-field.amendment';
 import { SharedForm } from './shared-form.amendment';
+import { MockFn, MockObject } from './spec';
 
 describe('FormPreset', () => {
   it('is applied to field', async () => {
