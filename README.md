@@ -6,7 +6,6 @@ Wesib: Forms
 [![GitHub Project][github-image]][github-url]
 [![API Documentation][api-docs-image]][api-docs-url]
 
-[Wesib]: https://github.com/wesib/wesib
 [npm-image]: https://img.shields.io/npm/v/@wesib/forms.svg?logo=npm
 [npm-url]: https://www.npmjs.com/package/@wesib/forms
 [build-status-img]: https://github.com/wesib/forms/workflows/Build/badge.svg
