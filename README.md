@@ -8,6 +8,20 @@ Wesib: Forms
 [![GitHub Project][github-image]][github-url]
 [![API Documentation][api-docs-image]][api-docs-url]
 
+This module adapts an [Input Aspects] library for the use with components.
+
+A `Form` instance represents some form control. While a `Field` instance represents an input field control.
+
+When `@SharedForm()` decorates a container component property with `Form` value, this makes that form shared.
+
+When `@SharedField()` decorates a nested component property with `Field` value, this field is added to the form
+shared by closest container, and also makes this field shared.
+
+An `@OnSubmit()`-decorated method is called when the form shared by the component (or its closest container) submitted. 
+
+A `FormPreset` instance provided for component context can be used to modify `Form` and `Field` aspects.
+
+
 [npm-image]: https://img.shields.io/npm/v/@wesib/forms.svg?logo=npm
 [npm-url]: https://www.npmjs.com/package/@wesib/forms
 [build-status-img]: https://github.com/wesib/forms/workflows/Build/badge.svg
