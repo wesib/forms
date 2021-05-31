@@ -34,3 +34,4 @@ A `FormPreset` instance provided for component context can be used to modify `Fo
 [github-url]: https://github.com/wesib/forms
 [api-docs-image]: https://img.shields.io/static/v1?logo=typescript&label=API&message=docs&color=informational
 [api-docs-url]: https://wesib.github.io/forms/ 
+[Input Aspects]: https://www.npmjs.com/package/@frontmeans/input-aspects
