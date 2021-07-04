@@ -158,7 +158,7 @@ export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer 
     return this.body?.element;
   }
 
-  toString(): string {
+  override toString(): string {
     return 'Form';
   }
 

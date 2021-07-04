@@ -57,7 +57,7 @@ export class Field<TValue, TSharer extends object = any> extends FormUnit<TValue
     super(Field$provider(() => this, valueRecipe(controls)));
   }
 
-  toString(): string {
+  override toString(): string {
     return 'Field';
   }
 

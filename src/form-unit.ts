@@ -37,7 +37,7 @@ export abstract class FormUnit<
     return this.body?.control;
   }
 
-  [Contextual__symbol](sharer: ComponentContext): this {
+  override [Contextual__symbol](sharer: ComponentContext): this {
     super[Contextual__symbol](sharer);
     this.read(noop).needs(sharer); // Create controls eagerly.
     return this;

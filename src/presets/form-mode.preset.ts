@@ -67,13 +67,13 @@ export class FormModePreset extends AbstractFormPreset {
     );
   }
 
-  setupField<TValue, TSharer extends object>(
+  override setupField<TValue, TSharer extends object>(
       builder: Field.Builder<TValue, TSharer>,
   ): void {
     builder.control.setup(this._byForm);
   }
 
-  setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
+  override setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
       builder: Form.Builder<TModel, TElt, TSharer>,
   ): void {
     builder.control.setup(this._byValidity);
