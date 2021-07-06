@@ -160,7 +160,7 @@ export function SharedField<
   }
 
   const {
-    share = FieldShare as ShareRef<any> as ShareRef<TField>,
+    share = FieldShare as ShareRef<TField>,
     form,
   } = def;
   const locateForm$default = shareLocator(form, { share: FormShare });

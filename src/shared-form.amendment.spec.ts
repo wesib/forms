@@ -44,7 +44,7 @@ describe('@SharedForm', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const form = (await context.get(FormShare))!;
+    const form = (await context.get(FormShare.Default))!;
 
     expect(form).toBeInstanceOf(Form);
     expect(form.control).toBeUndefined();

@@ -11,10 +11,7 @@ import { Field } from './field';
 import { Form } from './form';
 import { FormPreset } from './form-preset';
 
-/**
- * @internal
- */
-export const DefaultFormPreset: FormPreset.Spec = {
+export const DefaultFormPreset: FormPreset = {
 
   setupField<TValue, TSharer extends object>(
       { sharer, control }: Field.Builder<TValue, TSharer>,

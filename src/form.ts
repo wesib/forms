@@ -159,7 +159,7 @@ export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer 
   }
 
   override toString(): string {
-    return 'Form';
+    return '[Form]';
   }
 
 }
@@ -181,7 +181,7 @@ function Form$provider<TModel, TElt extends HTMLElement, TSharer extends object>
     },
   });
 
-  return sharer => sharer.get(FormPreset).rules.do(
+  return sharer => sharer.get(FormPreset).track.do(
       digAfter_(preset => {
 
         const builder: Form.Builder<TModel, TElt, TSharer> = {

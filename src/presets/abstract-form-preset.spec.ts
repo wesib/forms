@@ -22,14 +22,14 @@ describe('AbstractFormPreset', () => {
   });
 
   describe('setupField', () => {
-    it('does nothing', () => {
-      expect(new TestFormPreset().setupField(null!)).toBeUndefined();
+    it('is not defined', () => {
+      expect(new TestFormPreset().setupField).toBeUndefined();
     });
   });
 
   describe('setupForm', () => {
-    it('does nothing', () => {
-      expect(new TestFormPreset().setupForm(null!)).toBeUndefined();
+    it('is not defined', () => {
+      expect(new TestFormPreset().setupForm).toBeUndefined();
     });
   });
 

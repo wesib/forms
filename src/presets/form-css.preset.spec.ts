@@ -141,8 +141,8 @@ describe('FormCssPreset', () => {
     const formEl = doc.body.appendChild(doc.createElement('test-form'));
     const fieldEl = formEl.appendChild(doc.createElement('test-field'));
 
-    const form = (await formDef.mountTo(formEl).get(FormShare))!;
-    const field = (await fieldDef.mountTo(fieldEl).get(FieldShare))!;
+    const form = (await formDef.mountTo(formEl).get(FormShare.Default))!;
+    const field = (await fieldDef.mountTo(fieldEl).get(FieldShare.Default))!;
 
     expect(form).not.toBe(field);
 
