@@ -12,6 +12,7 @@ import {
 } from '@frontmeans/input-aspects';
 import { newManualRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { cxConstAsset } from '@proc7ts/context-builder';
 import {
   Component,
   ComponentContext,
@@ -21,7 +22,6 @@ import {
   DefinitionContext,
 } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
-import { cxConstAsset } from '../../../proc7ts/context-builder/src';
 import { Field } from './field';
 import { FieldShare } from './field.share';
 import { Form } from './form';
