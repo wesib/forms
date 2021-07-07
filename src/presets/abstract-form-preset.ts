@@ -16,7 +16,8 @@ const AbstractFormPreset$map = (/*#__PURE__*/ new WeakMap<typeof AbstractFormPre
  * An instance of implementation class may be created to customize its behavior. Such instance implements a
  * `ContextBuilder` interface. Thus is can be passed to context value registration method.
  */
-export abstract class AbstractFormPreset implements FormPreset.Spec, CxAsset<FormPreset.Tracker, FormPreset.Spec> {
+export abstract class AbstractFormPreset
+    implements FormPreset.Spec, CxAsset.Placer<FormPreset.Tracker, FormPreset.Spec> {
 
   /**
    * Feature definition of the preset.
