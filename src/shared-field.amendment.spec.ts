@@ -1,6 +1,6 @@
 import { InGroup, inGroup, inList, InList, InParents, inValue } from '@frontmeans/input-aspects';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { AfterEvent, afterThe, mapAfter, trackValue } from '@proc7ts/fun-events';
+import { afterThe } from '@proc7ts/fun-events';
 import { valueProvider } from '@proc7ts/primitives';
 import { BootstrapContext, Component, ComponentClass, ComponentContext, ComponentSlot, FeatureDef } from '@wesib/wesib';
 import { MockElement, testDefinition, testElement } from '@wesib/wesib/testing';
@@ -183,8 +183,6 @@ describe('@SharedField', () => {
   });
   it('does not add a field to missing form', async () => {
 
-    const hasForm = trackValue(false);
-
     @Component(
         'form-element',
         {
@@ -194,24 +192,16 @@ describe('@SharedField', () => {
     class FormComponent {
 
       @SharedForm()
-      readonly form: AfterEvent<[Form?]>;
-
-      constructor(context: ComponentContext) {
-        this.form = hasForm.read.do(
-            mapAfter(hasForm => hasForm
-                ? new Form(Form.forElement(inGroup({}), context.element))
-                : undefined),
-        );
-      }
+      form?: Form;
 
     }
 
-    const { fieldCtx } = await bootstrap(undefined, FormComponent);
+    const { formCtx, fieldCtx } = await bootstrap(undefined, FormComponent);
     const field = (await fieldCtx.get(FieldShare.share))!;
 
     expect([...(await field.control!.aspect(InParents).read)]).toHaveLength(0);
 
-    hasForm.it = true;
+    formCtx.component.form = new Form(Form.forElement(inGroup({}), formCtx.element));
     expect([...(await field.control!.aspect(InParents).read)]).toHaveLength(1);
   });
   it('applies additional amendments', async () => {
@@ -340,10 +330,10 @@ describe('@SharedField', () => {
       class FormComponent {
 
         @SharedForm()
-        readonly form: AfterEvent<[Form]>;
+        readonly form: Form;
 
         constructor(context: ComponentContext) {
-          this.form = trackValue(new Form(Form.forElement(inGroup({}), context.element))).read;
+          this.form = new Form(Form.forElement(inGroup({}), context.element));
         }
 
       }
