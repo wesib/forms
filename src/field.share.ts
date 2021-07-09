@@ -1,5 +1,5 @@
 import { Class } from '@proc7ts/primitives';
-import { Share, Share__symbol } from '@wesib/generic';
+import { Share } from '@wesib/generic';
 import { Field } from './field';
 
 const FieldShare$map = (/*#__PURE__*/ new WeakMap<Class, FieldShare<any>>());
@@ -17,7 +17,7 @@ export class FieldShare<TValue = any> extends Share<Field<TValue>> {
   /**
    * Default field share instance.
    */
-  static get Default(): FieldShare {
+  static get share(): FieldShare {
 
     let instance = FieldShare$map.get(this);
 
@@ -27,10 +27,6 @@ export class FieldShare<TValue = any> extends Share<Field<TValue>> {
     }
 
     return instance;
-  }
-
-  static get [Share__symbol](): FieldShare {
-    return this.Default;
   }
 
 }

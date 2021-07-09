@@ -1,5 +1,5 @@
 import { Class } from '@proc7ts/primitives';
-import { Share, Share__symbol } from '@wesib/generic';
+import { Share } from '@wesib/generic';
 import { Form } from './form';
 
 const FormShare$map = (/*#__PURE__*/ new WeakMap<Class, FormShare<any, any>>());
@@ -18,7 +18,7 @@ export class FormShare<TModel = any, TElt extends HTMLElement = HTMLElement> ext
   /**
    * Default form share instance.
    */
-  static get Default(): FormShare<any, any> {
+  static get share(): FormShare<any, any> {
 
     let instance = FormShare$map.get(this);
 
@@ -28,10 +28,6 @@ export class FormShare<TModel = any, TElt extends HTMLElement = HTMLElement> ext
     }
 
     return instance;
-  }
-
-  static get [Share__symbol](): FormShare<any, any> {
-    return this.Default;
   }
 
 }

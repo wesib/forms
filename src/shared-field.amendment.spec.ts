@@ -33,7 +33,7 @@ describe('@SharedField', () => {
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
 
-    expect(await context.get(FieldShare.Default)).toBeInstanceOf(Field);
+    expect(await context.get(FieldShare.share)).toBeInstanceOf(Field);
   });
   it('shares provided field', async () => {
 
@@ -49,7 +49,7 @@ describe('@SharedField', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const { control } = (await context.get(FieldShare.Default))!;
+    const { control } = (await context.get(FieldShare.share))!;
 
     expect(createControl).toHaveBeenCalledWith(expect.objectContaining({ sharer: context }));
     expect(createControl).toHaveReturnedWith({ control });
@@ -69,7 +69,7 @@ describe('@SharedField', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const { control } = (await context.get(FieldShare.Default))!;
+    const { control } = (await context.get(FieldShare.share))!;
 
     expect(createControl).toHaveBeenCalledWith(expect.objectContaining({ sharer: context }));
     expect(createControl).toHaveBeenCalledTimes(1);
@@ -79,8 +79,8 @@ describe('@SharedField', () => {
 
     const { formCtx, fieldCtx } = await bootstrap();
 
-    const form = await formCtx.get(FormShare.Default);
-    const field = await fieldCtx.get(FieldShare.Default);
+    const form = await formCtx.get(FormShare.share);
+    const field = await fieldCtx.get(FieldShare.share);
     const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
     expect(controls.get('field')).toBe(field!.control);
@@ -102,8 +102,8 @@ describe('@SharedField', () => {
 
     const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
-    const form = await formCtx.get(FormShare.Default);
-    const field = await fieldCtx.get(FieldShare.Default);
+    const form = await formCtx.get(FormShare.share);
+    const field = await fieldCtx.get(FieldShare.share);
     const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
     expect(controls.get('field')).toBeUndefined();
@@ -126,7 +126,7 @@ describe('@SharedField', () => {
 
     const { formCtx } = await bootstrap(FieldComponent);
 
-    const form = await formCtx.get(FormShare.Default);
+    const form = await formCtx.get(FormShare.share);
     const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
     expect([...controls]).toHaveLength(0);
@@ -150,7 +150,7 @@ describe('@SharedField', () => {
 
     const { formCtx } = await bootstrap(FieldComponent);
 
-    const form = await formCtx.get(FormShare.Default);
+    const form = await formCtx.get(FormShare.share);
     const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
     expect([...controls]).toHaveLength(0);
@@ -176,7 +176,7 @@ describe('@SharedField', () => {
 
     const { formCtx } = await bootstrap(undefined, FormComponent);
 
-    const form = await formCtx.get(FormShare.Default);
+    const form = await formCtx.get(FormShare.share);
     const controls = await form!.control!.aspect(InList)!.controls.read;
 
     expect([...controls]).toHaveLength(0);
@@ -207,7 +207,7 @@ describe('@SharedField', () => {
     }
 
     const { fieldCtx } = await bootstrap(undefined, FormComponent);
-    const field = (await fieldCtx.get(FieldShare.Default))!;
+    const field = (await fieldCtx.get(FieldShare.share))!;
 
     expect([...(await field.control!.aspect(InParents).read)]).toHaveLength(0);
 
@@ -232,8 +232,8 @@ describe('@SharedField', () => {
 
     const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
-    const form = await formCtx.get(FormShare.Default);
-    const field = await fieldCtx.get(FieldShare.Default);
+    const form = await formCtx.get(FormShare.share);
+    const field = await fieldCtx.get(FieldShare.share);
     const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
     expect(controls.get('field')).toBeUndefined();
@@ -263,8 +263,8 @@ describe('@SharedField', () => {
 
       const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
-      const form = await formCtx.get(FormShare.Default);
-      const field = await fieldCtx.get(FieldShare.Default);
+      const form = await formCtx.get(FormShare.share);
+      const field = await fieldCtx.get(FieldShare.share);
       const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
       expect(controls.get('field')).toBe(field!.control);
@@ -286,8 +286,8 @@ describe('@SharedField', () => {
 
       const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
-      const form = await formCtx.get(FormShare.Default);
-      const field = await fieldCtx.get(FieldShare.Default);
+      const form = await formCtx.get(FormShare.share);
+      const field = await fieldCtx.get(FieldShare.share);
       const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
       expect(controls.get('field')).toBe(field!.control);
@@ -314,8 +314,8 @@ describe('@SharedField', () => {
 
       const { formCtx, fieldCtx } = await bootstrap(SubFormComponent);
 
-      const form = await formCtx.get(FormShare.Default);
-      const subForm = await fieldCtx.get(FormShare.Default);
+      const form = await formCtx.get(FormShare.share);
+      const subForm = await fieldCtx.get(FormShare.share);
       const controls = await form!.control!.aspect(InGroup)!.controls.read;
 
       expect(controls.get('subForm')).toBe(subForm!.control);

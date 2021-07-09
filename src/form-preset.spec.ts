@@ -54,7 +54,7 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const field = await context.get(FieldShare.Default);
+    const field = await context.get(FieldShare.share);
 
     expect(field?.sharer).toBe(context);
     expect(field?.control).toBeInstanceOf(InControl);
@@ -87,7 +87,7 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const form = await context.get(FormShare.Default);
+    const form = await context.get(FormShare.share);
 
     expect(form?.sharer).toBe(context);
     expect(form?.control).toBeInstanceOf(InGroup);
@@ -118,7 +118,7 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const field = (await context.get(FieldShare.Default))!;
+    const field = (await context.get(FieldShare.share))!;
 
     expect(field.control?.it).toBe('test1');
 
@@ -157,7 +157,7 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const form = (await context.get(FormShare.Default))!;
+    const form = (await context.get(FormShare.share))!;
 
     expect(form.control?.it.counter).toBe(1);
 
@@ -218,8 +218,8 @@ describe('FormPreset', () => {
       const element = new (await testElement(TestComponent))();
 
       context = await ComponentSlot.of(element).whenReady;
-      form = (await context.get(FormShare.Default))!;
-      field = (await context.get(FieldShare.Default))!;
+      form = (await context.get(FormShare.share))!;
+      field = (await context.get(FieldShare.share))!;
     });
 
     describe('form control', () => {
