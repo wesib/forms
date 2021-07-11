@@ -10,9 +10,8 @@ import {
   inValue,
 } from '@frontmeans/input-aspects';
 import { describe, expect, it } from '@jest/globals';
-import { AfterEvent, mapAfter, trackValue } from '@proc7ts/fun-events';
+import { mapAfter, trackValue } from '@proc7ts/fun-events';
 import { arrayOfElements } from '@proc7ts/primitives';
-import { Share__symbol } from '@wesib/generic';
 import { Component, ComponentContext, ComponentSlot } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
 import { adjacentToField, adjacentToForm } from './adjacent-field';
@@ -75,7 +74,7 @@ describe('shares', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const button = await ButtonShare[Share__symbol].valueFor(context, { local: true });
+    const button = await ButtonShare.share.valueFor(context, { local: true });
 
     expect(button).toBeInstanceOf(Field);
     expect(button?.control).toBeInstanceOf(InElement);
@@ -83,7 +82,6 @@ describe('shares', () => {
 
   it('declares error indicator', async () => {
 
-    const hasField = trackValue(false);
     const hasControls = trackValue(false);
 
     @Component(
@@ -95,15 +93,7 @@ describe('shares', () => {
     class TestComponent {
 
       @SharedField()
-      readonly field: AfterEvent<[Field<string>?]> = hasField.read.do(
-          mapAfter((hasField: boolean): Field<string> | undefined => hasField
-              ? new Field<string>(builder => hasControls.read.do(
-                  mapAfter(hasControls => hasControls
-                      ? { control: builder.control.build(opts => inValue('test', opts)) }
-                      : undefined),
-              ))
-              : undefined),
-      );
+      field?: Field<string>;
 
       @SharedField({ share: IndicatorShare })
       readonly button = adjacentToField<unknown>(builder => ({
@@ -117,13 +107,17 @@ describe('shares', () => {
     }
 
     const element = new (await testElement(TestComponent))();
-    const context = await ComponentSlot.of(element).whenReady;
-    const indicator = await IndicatorShare[Share__symbol].valueFor(context, { local: true });
+    const context = await ComponentSlot.of<TestComponent>(element).whenReady;
+    const indicator = await IndicatorShare.share.valueFor(context, { local: true });
 
     expect(indicator).toBeInstanceOf(Field);
     expect(indicator?.control).toBeUndefined();
 
-    hasField.it = true;
+    context.component.field = new Field<string>(builder => hasControls.read.do(
+        mapAfter(hasControls => hasControls
+            ? { control: builder.control.build(opts => inValue('test', opts)) }
+            : undefined),
+    ));
     expect(indicator?.control).toBeUndefined();
 
     hasControls.it = true;

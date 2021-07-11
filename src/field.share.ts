@@ -1,6 +1,5 @@
-import { ContextKey__symbol } from '@proc7ts/context-values';
 import { Class } from '@proc7ts/primitives';
-import { Share, Share__symbol } from '@wesib/generic';
+import { Share } from '@wesib/generic';
 import { Field } from './field';
 
 const FieldShare$map = (/*#__PURE__*/ new WeakMap<Class, FieldShare<any>>());
@@ -18,7 +17,7 @@ export class FieldShare<TValue = any> extends Share<Field<TValue>> {
   /**
    * Default field share instance.
    */
-  static get [Share__symbol](): FieldShare {
+  static get share(): FieldShare {
 
     let instance = FieldShare$map.get(this);
 
@@ -28,13 +27,6 @@ export class FieldShare<TValue = any> extends Share<Field<TValue>> {
     }
 
     return instance;
-  }
-
-  /**
-   * A key of component context value containing default field instance.
-   */
-  static get [ContextKey__symbol](): Share.Key<Field<any>> {
-    return this[Share__symbol][ContextKey__symbol];
   }
 
 }

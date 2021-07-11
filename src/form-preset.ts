@@ -1,36 +1,20 @@
-import { ContextKey__symbol, ContextSupply, ContextValueSlot } from '@proc7ts/context-values';
-import { ContextUpKey } from '@proc7ts/context-values/updatable';
-import { AfterEvent, AfterEvent__symbol, EventKeeper, mapAfter, supplyAfter } from '@proc7ts/fun-events';
+import { cxDynamic, CxEntry } from '@proc7ts/context-values';
+import { AfterEvent, afterEventBy, sendEventsTo } from '@proc7ts/fun-events';
 import { DefaultFormPreset } from './default.preset.impl';
 import { Field } from './field';
 import { Form } from './form';
 
-class FormPresetKey extends ContextUpKey<FormPreset, FormPreset.Spec> {
-
-  constructor() {
-    super('form-preset');
-  }
-
-  get upKey(): this {
-    return this;
-  }
-
-  grow(
-      slot: ContextValueSlot<
-          FormPreset,
-          ContextUpKey.Source<FormPreset.Spec>,
-          AfterEvent<FormPreset.Spec[]>>,
-  ): void {
-    slot.insert(new FormPreset(slot.seed.do(
-        mapAfter((...specs) => FormPreset.combine(...specs, DefaultFormPreset)),
-        supplyAfter(slot.context.get(ContextSupply)),
-    )));
-  }
-
+function FormPreset$noFieldSetup<TValue, TSharer extends object>(
+    _builder: Field.Builder<TValue, TSharer>,
+): void {
+  // No field setup
 }
 
-const FormPreset__key = (/*#__PURE__*/ new FormPresetKey());
-const FormPreset$rules__symbol = (/*#__PURE__*/ Symbol('FormPreset.rules'));
+function FormPreset$noFormSetup<TModel, TElt extends HTMLElement, TSharer extends object>(
+    _builder: Form.Builder<TModel, TElt, TSharer>,
+): void {
+  // No form setup
+}
 
 /**
  * Form controls preset.
@@ -38,57 +22,7 @@ const FormPreset$rules__symbol = (/*#__PURE__*/ Symbol('FormPreset.rules'));
  * Any number of presets can be {@link FormPreset.Spec specified} in component context to be applies to forms
  * and fields. They would be combined into single preset available in component context.
  */
-export class FormPreset implements FormPreset.Rules, EventKeeper<[FormPreset.Rules]> {
-
-  /**
-   * A key of component context value containing default form preset combined from all provided {@link FormPreset.Spec
-   * specifiers}.
-   *
-   * As a bare minimum it attaches the following aspects to controls:
-   *
-   * - `InRenderScheduler` set to `ElementRenderScheduler`,
-   * - `InNamespaceAliaser` set to `DefaultNamespaceAliaser.
-   */
-  static get [ContextKey__symbol](): ContextUpKey<FormPreset, FormPreset.Spec> {
-    return FormPreset__key;
-  }
-
-  /**
-   * Combines form preset specifiers.
-   *
-   * @param specs - Form preset specifiers to combine.
-   *
-   * @returns Form preset rules instance combining the given specifiers.
-   */
-  static combine(...specs: FormPreset.Spec[]): FormPreset.Rules {
-    return {
-      setupField: FormPreset$setupField(specs),
-      setupForm: FormPreset$setupForm(specs),
-    };
-  }
-
-  /**
-   * @internal
-   */
-  private [FormPreset$rules__symbol]: FormPreset.Rules;
-
-  /**
-   * Constructs form preset.
-   *
-   * @param rules - An `AfterEvent` keeper of form preset {@link FormPreset.Rules rules}.
-   */
-  constructor(readonly rules: AfterEvent<[FormPreset.Rules]>) {
-    rules(rules => {
-      this[FormPreset$rules__symbol] = rules;
-    });
-  }
-
-  /**
-   * Builds an `AfterEvent` keeper of this form preset {@link FormPreset.Rules rules}.
-   */
-  [AfterEvent__symbol](): AfterEvent<[FormPreset.Rules]> {
-    return this.rules;
-  }
+export interface FormPreset {
 
   /**
    * Sets up form field controls.
@@ -97,9 +31,7 @@ export class FormPreset implements FormPreset.Rules, EventKeeper<[FormPreset.Rul
    */
   setupField<TValue, TSharer extends object>(
       builder: Field.Builder<TValue, TSharer>,
-  ): void {
-    this[FormPreset$rules__symbol].setupField(builder);
-  }
+  ): void;
 
   /**
    * Sets up form controls.
@@ -108,13 +40,78 @@ export class FormPreset implements FormPreset.Rules, EventKeeper<[FormPreset.Rul
    */
   setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
       builder: Form.Builder<TModel, TElt, TSharer>,
-  ): void {
-    this[FormPreset$rules__symbol].setupForm(builder);
-  }
+  ): void;
 
 }
 
+/**
+ * Component context entry containing default form preset combined from all provided {@link FormPreset.Spec specifiers}.
+ *
+ * As a bare minimum it attaches the following aspects to controls:
+ *
+ * - `InRenderScheduler` set to `ElementRenderScheduler`,
+ * - `InNamespaceAliaser` set to `DefaultNamespaceAliaser.
+ */
+export const FormPreset: FormPreset.Static = {
+
+  perContext: (/*#__PURE__*/ cxDynamic<FormPreset.Tracker, FormPreset.Spec, FormPreset>({
+    create: (specs, _target) => FormPreset.combine(...specs, DefaultFormPreset),
+    byDefault: _target => DefaultFormPreset,
+    assign: ({ get, to, track }, _target) => {
+
+      const preset: FormPreset.Tracker = {
+
+        track: afterEventBy(receiver => track(sendEventsTo(receiver), receiver)),
+
+        setupField<TValue, TSharer extends object>(
+            builder: Field.Builder<TValue, TSharer>,
+        ): void {
+          get().setupField(builder);
+        },
+
+        setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
+            builder: Form.Builder<TModel, TElt, TSharer>,
+        ): void {
+          get().setupForm(builder);
+        },
+
+      };
+
+      return receiver => to((_, by) => receiver(preset, by));
+    },
+  })),
+
+  /**
+   * Combines form preset specifiers.
+   *
+   * @param specs - Form preset specifiers to combine.
+   *
+   * @returns Form preset rules instance combining the given specifiers.
+   */
+  combine(this: void, ...specs: FormPreset.Spec[]): FormPreset {
+    return {
+      setupField: FormPreset$setupField(specs),
+      setupForm: FormPreset$setupForm(specs),
+    };
+  },
+
+  toString: () => '[FormPreset]',
+
+};
+
 export namespace FormPreset {
+
+  /**
+   * A tracker of form presets provided as component context assets.
+   */
+  export interface Tracker extends FormPreset {
+
+    /**
+     * An `AfterEvent` keeper of {@link Static.combine combined} form preset.
+     */
+    readonly track: AfterEvent<[FormPreset]>;
+
+  }
 
   /**
    * A {@link FormPreset form preset} specifier.
@@ -144,22 +141,18 @@ export namespace FormPreset {
   }
 
   /**
-   * {@link FormPreset Form preset} rules.
-   *
-   * Multiple {@link Spec specifiers} could be combined into single rule instance by {@link FormPreset.combine} static
-   * method.
+   * Static `FormPreset` instance type.
    */
-  export interface Rules extends FormPreset.Spec {
+  export interface Static extends CxEntry<FormPreset.Tracker, FormPreset.Spec> {
 
-    setupField<TValue, TSharer extends object>(
-        this: void,
-        builder: Field.Builder<TValue, TSharer>,
-    ): void;
-
-    setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
-        this: void,
-        builder: Form.Builder<TModel, TElt, TSharer>,
-    ): void;
+    /**
+     * Combines form preset specifiers.
+     *
+     * @param specs - Form preset specifiers to combine.
+     *
+     * @returns Form preset rules instance combining the given specifiers.
+     */
+    combine(this: void, ...specs: FormPreset.Spec[]): FormPreset;
 
   }
 
@@ -183,12 +176,6 @@ function FormPreset$setupField(
   );
 }
 
-function FormPreset$noFieldSetup<TValue, TSharer extends object>(
-    _builder: Field.Builder<TValue, TSharer>,
-): void {
-  // No field setup
-}
-
 function FormPreset$setupForm(
     specs: readonly FormPreset.Spec[],
 ): <TModel, TElt extends HTMLElement, TSharer extends object>(
@@ -205,10 +192,4 @@ function FormPreset$setupForm(
           : prev,
       FormPreset$noFormSetup,
   );
-}
-
-function FormPreset$noFormSetup<TModel, TElt extends HTMLElement, TSharer extends object>(
-    _builder: Form.Builder<TModel, TElt, TSharer>,
-): void {
-  // No form setup
 }

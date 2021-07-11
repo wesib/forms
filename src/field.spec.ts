@@ -1,6 +1,5 @@
 import { inValue } from '@frontmeans/input-aspects';
 import { beforeEach, describe, expect, it } from '@jest/globals';
-import { Contextual__symbol } from '@proc7ts/context-values';
 import { trackValue } from '@proc7ts/fun-events';
 import { Component, ComponentContext, ComponentSlot } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
@@ -41,7 +40,7 @@ describe('Field', () => {
 
       controls.it = { control: control1 };
 
-      field[Contextual__symbol](context);
+      field.sharedBy(context);
 
       expect(field.body).toEqual({ field, control: control1 });
       expect(control1.supply.isOff).toBe(false);
@@ -65,13 +64,13 @@ describe('Field', () => {
 
   describe('control', () => {
     it('throws before bound to sharer context', () => {
-      expect(() => field.control).toThrow(new TypeError('Field is not properly shared yet'));
+      expect(() => field.control).toThrow(new TypeError('[Field] is not properly shared yet'));
     });
   });
 
   describe('sharer', () => {
     it('throws before bound to sharer context', () => {
-      expect(() => field.sharer).toThrow(new TypeError('Field is not properly shared yet'));
+      expect(() => field.sharer).toThrow(new TypeError('[Field] is not properly shared yet'));
     });
   });
 

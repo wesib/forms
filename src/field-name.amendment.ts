@@ -3,7 +3,7 @@ import { Amendment } from '@proc7ts/amend';
 import { afterAll, consumeEvents, digAfter_ } from '@proc7ts/fun-events';
 import { asis, Class, valuesProvider } from '@proc7ts/primitives';
 import { Supply } from '@proc7ts/supply';
-import { SharedDef, shareLocator, ShareLocator } from '@wesib/generic';
+import { shareLocator, ShareLocator } from '@wesib/generic';
 import { ComponentClass } from '@wesib/wesib';
 import { Field } from './field';
 import { Field$nameByKey } from './field.impl';
@@ -31,7 +31,7 @@ export function FormName<
     TElt extends HTMLElement = Form.ElementType<TForm>,
     TClass extends ComponentClass = Class>(
     def?: FieldNameDef,
-): Amendment<AeSharedForm<TForm, SharedDef.Value<TForm>, TModel, TElt, TClass>> {
+): Amendment<AeSharedForm<TForm, TModel, TElt, TClass>> {
   return FormUnitName<TForm, TModel, Form.Controls<TModel, TElt>, TClass>(def);
 }
 
@@ -50,7 +50,7 @@ export function FieldName<
     TFieldValue = Field.ValueType<TField>,
     TClass extends ComponentClass = Class>(
     def: FieldNameDef = {},
-): Amendment<AeSharedField<TField, SharedDef.Value<TField>, TFieldValue, TClass>> {
+): Amendment<AeSharedField<TField, TFieldValue, TClass>> {
   return FormUnitName<TField, TFieldValue, Field.Controls<TFieldValue>, TClass>(def);
 }
 
@@ -60,7 +60,7 @@ function FormUnitName<
     TControls extends FormUnit.Controls<TUnitValue>,
     TClass extends ComponentClass = Class>(
     def: FieldNameDef = {},
-): Amendment<AeSharedFormUnit<TUnit, SharedDef.Value<TUnit>, TUnitValue, TControls, TClass>> {
+): Amendment<AeSharedFormUnit<TUnit, TUnitValue, TControls, TClass>> {
   return ({
     key,
     share,

@@ -12,15 +12,14 @@ import {
 } from '@frontmeans/input-aspects';
 import { newManualRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import { ContextKey__symbol, Contextual__symbol } from '@proc7ts/context-values';
-import { ContextUpKey } from '@proc7ts/context-values/updatable';
-import { afterSupplied, trackValue, ValueTracker } from '@proc7ts/fun-events';
+import { cxConstAsset } from '@proc7ts/context-builder';
 import {
   Component,
   ComponentContext,
   ComponentRenderScheduler,
   ComponentSlot,
   DefaultNamespaceAliaser,
+  DefinitionContext,
 } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Field } from './field';
@@ -42,12 +41,7 @@ describe('FormPreset', () => {
         {
           extend: { type: MockElement },
           define(defContext) {
-            defContext.perComponent({
-              a: FormPreset,
-              is: {
-                setupField: setup,
-              },
-            });
+            defContext.perComponent(cxConstAsset(FormPreset, { setupField: setup }));
           },
         },
     )
@@ -60,7 +54,7 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const field = await context.get(FieldShare);
+    const field = await context.get(FieldShare.share);
 
     expect(field?.sharer).toBe(context);
     expect(field?.control).toBeInstanceOf(InControl);
@@ -76,12 +70,7 @@ describe('FormPreset', () => {
         {
           extend: { type: MockElement },
           define(defContext) {
-            defContext.perComponent({
-              a: FormPreset,
-              is: {
-                setupForm: setup,
-              },
-            });
+            defContext.perComponent(cxConstAsset(FormPreset, { setupForm: setup }));
           },
         },
     )
@@ -98,7 +87,7 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const form = await context.get(FormShare);
+    const form = await context.get(FormShare.share);
 
     expect(form?.sharer).toBe(context);
     expect(form?.control).toBeInstanceOf(InGroup);
@@ -108,18 +97,15 @@ describe('FormPreset', () => {
   });
   it('tracks field rule changes', async () => {
 
-    const ruleTracker: ValueTracker<FormPreset.Spec> = trackValue({});
+    let defContext!: DefinitionContext;
     let controlCounter = 0;
 
     @Component(
         'test-element',
         {
           extend: { type: MockElement },
-          define(defContext) {
-            defContext.perComponent({
-              a: FormPreset,
-              is: ruleTracker.read,
-            });
+          define(defCtx) {
+            defContext = defCtx;
           },
         },
     )
@@ -132,32 +118,29 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const field = (await context.get(FieldShare))!;
+    const field = (await context.get(FieldShare.share))!;
 
     expect(field.control?.it).toBe('test1');
 
-    const rules: MockObject<FormPreset.Spec> = {
+    const preset: MockObject<FormPreset.Spec> = {
       setupField: jest.fn<void, []>(),
     };
 
-    ruleTracker.it = rules;
-    expect(rules.setupField).toHaveBeenCalledTimes(1);
+    defContext.perComponent(cxConstAsset(FormPreset, preset));
+    expect(preset.setupField).toHaveBeenCalledTimes(1);
     expect(field.control?.it).toBe('test2');
   });
   it('tracks form rule changes', async () => {
 
-    const ruleTracker: ValueTracker<FormPreset.Spec> = trackValue({});
+    let defContext!: DefinitionContext;
     let controlCounter = 0;
 
     @Component(
         'test-element',
         {
           extend: { type: MockElement },
-          define(defContext) {
-            defContext.perComponent({
-              a: FormPreset,
-              is: ruleTracker.read,
-            });
+          define(defCtx) {
+            defContext = defCtx;
           },
         },
     )
@@ -174,17 +157,23 @@ describe('FormPreset', () => {
 
     const element = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const form = (await context.get(FormShare))!;
+    const form = (await context.get(FormShare.share))!;
 
     expect(form.control?.it.counter).toBe(1);
 
-    const rules: MockObject<FormPreset.Spec> = {
+    const preset: MockObject<FormPreset.Spec> = {
       setupForm: jest.fn<void, []>(),
     };
 
-    ruleTracker.it = rules;
-    expect(rules.setupForm).toHaveBeenCalledTimes(1);
+    defContext.perComponent(cxConstAsset(FormPreset, preset));
+    expect(preset.setupForm).toHaveBeenCalledTimes(1);
     expect(form.control?.it.counter).toBe(2);
+  });
+
+  describe('FormPreset', () => {
+    it('returns string representation', () => {
+      expect(String(FormPreset)).toBe('[FormPreset]');
+    });
   });
 
   describe('defaults', () => {
@@ -204,7 +193,7 @@ describe('FormPreset', () => {
             extend: { type: MockElement },
             feature: {
               setup(setup) {
-                setup.perComponent({ a: ComponentRenderScheduler, is: mockRenderScheduler });
+                setup.perComponent(cxConstAsset(ComponentRenderScheduler, mockRenderScheduler));
               },
             },
           },
@@ -229,8 +218,8 @@ describe('FormPreset', () => {
       const element = new (await testElement(TestComponent))();
 
       context = await ComponentSlot.of(element).whenReady;
-      form = (await context.get(FormShare))!;
-      field = (await context.get(FieldShare))!;
+      form = (await context.get(FormShare.share))!;
+      field = (await context.get(FieldShare.share))!;
     });
 
     describe('form control', () => {
@@ -284,23 +273,19 @@ describe('FormPreset', () => {
     describe('setupField', () => {
 
       let controlCounter: number;
-      let ruleTracker: ValueTracker<FormPreset.Spec>;
+      let defContext: DefinitionContext;
       let context: ComponentContext;
-      let formPreset: FormPreset;
+      let formPreset: FormPreset.Tracker;
 
       beforeEach(async () => {
         controlCounter = 0;
-        ruleTracker = trackValue({});
 
         @Component(
             'test-element',
             {
               extend: { type: MockElement },
-              define(defContext) {
-                defContext.perComponent({
-                  a: FormPreset,
-                  is: ruleTracker.read,
-                });
+              define(defCtx) {
+                defContext = defCtx;
               },
             },
         )
@@ -321,7 +306,7 @@ describe('FormPreset', () => {
           });
           const field = new Field<number>(createControls);
 
-          expect(field[Contextual__symbol](context)).toBe(field);
+          field.sharedBy(context);
 
           const builder1: Field.Builder<number, any> = {
             sharer: context,
@@ -332,11 +317,14 @@ describe('FormPreset', () => {
           formPreset.setupField(builder1);
           expect(createControls(builder1).control.it).toBe(2);
 
-          ruleTracker.it = {
-            setupField: (builder: Field.Builder<any, any>) => {
-              builder.control.setup(ctl => ctl.it += 10);
-            },
-          };
+          defContext.perComponent(cxConstAsset(
+              FormPreset,
+              {
+                setupField: (builder: Field.Builder<any, any>) => {
+                  builder.control.setup(ctl => ctl.it += 10);
+                },
+              },
+          ));
 
           const builder2: Field.Builder<number, any> = {
             sharer: context,
@@ -360,7 +348,7 @@ describe('FormPreset', () => {
           );
           const form = new Form<{ counter: number }>(createControls);
 
-          expect(form[Contextual__symbol](context)).toBe(form);
+          form.sharedBy(context);
 
           const builder1: Form.Builder<{ counter: number }, any, any> = {
             sharer: context,
@@ -372,11 +360,14 @@ describe('FormPreset', () => {
           formPreset.setupForm(builder1);
           expect(createControls(builder1).control.it.counter).toBe(2);
 
-          ruleTracker.it = {
-            setupForm: (builder: Form.Builder<any, any, any>) => {
-              builder.control.setup(ctl => ctl.it.counter += 10);
-            },
-          };
+          defContext.perComponent(cxConstAsset(
+              FormPreset,
+              {
+                setupForm: (builder: Form.Builder<any, any, any>) => {
+                  builder.control.setup(ctl => ctl.it.counter += 10);
+                },
+              },
+          ));
 
           const builder2: Form.Builder<{ counter: number }, any, any> = {
             sharer: context,
@@ -390,33 +381,17 @@ describe('FormPreset', () => {
         });
       });
 
-      describe('[AfterEvent__symbol]', () => {
+      describe('track', () => {
         it('reflects rule changes', () => {
 
-          const rules = afterSupplied(formPreset);
           const receiver = jest.fn();
 
-          rules(receiver);
+          formPreset.track(receiver);
           expect(receiver).toHaveBeenCalledTimes(1);
 
-          ruleTracker.it = {};
+          defContext.perComponent(cxConstAsset(FormPreset, {}));
           expect(receiver).toHaveBeenCalledTimes(2);
         });
-      });
-    });
-  });
-
-  describe(`[ContextKey__symbol]`, () => {
-
-    let key: ContextUpKey<FormPreset, FormPreset.Spec>;
-
-    beforeEach(() => {
-      key = FormPreset[ContextKey__symbol];
-    });
-
-    describe('upKey', () => {
-      it('is the key itself', () => {
-        expect(key.upKey).toBe(key);
       });
     });
   });

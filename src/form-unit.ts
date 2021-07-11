@@ -1,5 +1,4 @@
 import { InControl } from '@frontmeans/input-aspects';
-import { Contextual__symbol } from '@proc7ts/context-values';
 import { noop } from '@proc7ts/primitives';
 import { Shareable } from '@wesib/generic';
 import { ComponentContext } from '@wesib/wesib';
@@ -37,10 +36,9 @@ export abstract class FormUnit<
     return this.body?.control;
   }
 
-  override [Contextual__symbol](sharer: ComponentContext): this {
-    super[Contextual__symbol](sharer);
+  override sharedBy(sharer: ComponentContext): void {
+    super.sharedBy(sharer);
     this.read(noop).needs(sharer); // Create controls eagerly.
-    return this;
   }
 
 }

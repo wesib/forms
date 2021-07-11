@@ -1,6 +1,5 @@
 import { inFormElement, inGroup, inValue } from '@frontmeans/input-aspects';
 import { beforeEach, describe, expect, it } from '@jest/globals';
-import { Contextual__symbol } from '@proc7ts/context-values';
 import { trackValue } from '@proc7ts/fun-events';
 import { Component, ComponentContext, ComponentSlot } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
@@ -42,7 +41,7 @@ describe('Form', () => {
 
       controls.it = { control: control1, element: element1 };
 
-      form[Contextual__symbol](context);
+      form.sharedBy(context);
 
       expect(form.control).toBe(control1);
       expect(form.element).toBe(element1);
@@ -75,19 +74,19 @@ describe('Form', () => {
 
   describe('control', () => {
     it('throws before bound to sharer context', () => {
-      expect(() => form.control).toThrow(new TypeError('Form is not properly shared yet'));
+      expect(() => form.control).toThrow(new TypeError('[Form] is not properly shared yet'));
     });
   });
 
   describe('element', () => {
     it('throws before bound to sharer context', () => {
-      expect(() => form.element).toThrow(new TypeError('Form is not properly shared yet'));
+      expect(() => form.element).toThrow(new TypeError('[Form] is not properly shared yet'));
     });
   });
 
   describe('sharer', () => {
     it('throws before bound to sharer context', () => {
-      expect(() => form.sharer).toThrow(new TypeError('Form is not properly shared yet'));
+      expect(() => form.sharer).toThrow(new TypeError('[Form] is not properly shared yet'));
     });
   });
 
