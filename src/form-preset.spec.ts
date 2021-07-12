@@ -10,17 +10,11 @@ import {
   InRenderScheduler,
   inValue,
 } from '@frontmeans/input-aspects';
+import { NamespaceAliaser } from '@frontmeans/namespace-aliaser';
 import { newManualRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { cxConstAsset } from '@proc7ts/context-builder';
-import {
-  Component,
-  ComponentContext,
-  ComponentRenderScheduler,
-  ComponentSlot,
-  DefaultNamespaceAliaser,
-  DefinitionContext,
-} from '@wesib/wesib';
+import { Component, ComponentContext, ComponentRenderScheduler, ComponentSlot, DefinitionContext } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Field } from './field';
 import { FieldShare } from './field.share';
@@ -232,8 +226,8 @@ describe('FormPreset', () => {
 
         expect(mockRenderScheduler).toHaveBeenLastCalledWith({ ...opts });
       });
-      it('sets `InNamespaceAliaser` to `DefaultNamespaceAliaser`', () => {
-        expect(form.control!.aspect(InNamespaceAliaser)).toBe(context.get(DefaultNamespaceAliaser));
+      it('sets `InNamespaceAliaser` to `NamespaceAliaser`', () => {
+        expect(form.control!.aspect(InNamespaceAliaser)).toBe(context.get(NamespaceAliaser));
       });
     });
 
@@ -247,8 +241,8 @@ describe('FormPreset', () => {
 
         expect(mockRenderScheduler).toHaveBeenLastCalledWith({ ...opts });
       });
-      it('sets `InNamespaceAliaser` to `DefaultNamespaceAliaser`', () => {
-        expect(form.element!.aspect(InNamespaceAliaser)).toBe(context.get(DefaultNamespaceAliaser));
+      it('sets `InNamespaceAliaser` to `NamespaceAliaser`', () => {
+        expect(form.element!.aspect(InNamespaceAliaser)).toBe(context.get(NamespaceAliaser));
       });
     });
 
@@ -262,8 +256,8 @@ describe('FormPreset', () => {
 
         expect(mockRenderScheduler).toHaveBeenLastCalledWith({ ...opts });
       });
-      it('sets `InNamespaceAliaser` to `DefaultNamespaceAliaser`', () => {
-        expect(field.control!.aspect(InNamespaceAliaser)).toBe(context.get(DefaultNamespaceAliaser));
+      it('sets `InNamespaceAliaser` to `NamespaceAliaser`', () => {
+        expect(field.control!.aspect(InNamespaceAliaser)).toBe(context.get(NamespaceAliaser));
       });
     });
 

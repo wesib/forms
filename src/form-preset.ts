@@ -49,8 +49,8 @@ export interface FormPreset {
  *
  * As a bare minimum it attaches the following aspects to controls:
  *
- * - `InRenderScheduler` set to `ElementRenderScheduler`,
- * - `InNamespaceAliaser` set to `DefaultNamespaceAliaser.
+ * - `InRenderScheduler` set to `ComponentRenderScheduler`,
+ * - `InNamespaceAliaser` set to `NamespaceAliaser.
  */
 export const FormPreset: FormPreset.Static = {
 
