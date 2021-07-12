@@ -26,8 +26,8 @@
   "peerDependencies": {
     "@frontmeans/input-aspects": "^4.4.0",
     "@proc7ts/fun-events": "^10.5.0",
-    "@wesib/generic": "^2.0.0-dev.0",
-    "@wesib/wesib": "^2.0.0-dev.0"
+    "@wesib/generic": "^2.0.0",
+    "@wesib/wesib": "^2.0.0"
   },
   "dependencies": {
     "@frontmeans/dom-events": "^1.2.0",
@@ -51,8 +51,8 @@
     "@types/jsdom": "^16.2.13",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
-    "@wesib/generic": "^2.0.0-dev.0",
-    "@wesib/wesib": "^2.0.0-dev.0",
+    "@wesib/generic": "^2.0.0",
+    "@wesib/wesib": "^2.0.0",
     "eslint": "^7.30.0",
     "eslint-plugin-jest": "^24.3.6",
     "gh-pages": "^3.2.3",
