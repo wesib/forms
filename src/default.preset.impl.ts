@@ -6,7 +6,8 @@ import {
   InRenderScheduler,
   knownInAspect,
 } from '@frontmeans/input-aspects';
-import { ComponentContext, ComponentRenderScheduler, DefaultNamespaceAliaser } from '@wesib/wesib';
+import { NamespaceAliaser } from '@frontmeans/namespace-aliaser';
+import { ComponentContext, ComponentRenderScheduler } from '@wesib/wesib';
 import { Field } from './field';
 import { Form } from './form';
 import { FormPreset } from './form-preset';
@@ -33,7 +34,7 @@ function DefaultFormPreset$setup<TValue, TSharer extends object>(
     builder: InBuilder<InControl<TValue>>,
 ): void {
 
-  const nsAliaser = sharer.get(DefaultNamespaceAliaser);
+  const nsAliaser = sharer.get(NamespaceAliaser);
   const renderScheduler = sharer.get(ComponentRenderScheduler);
 
   builder
