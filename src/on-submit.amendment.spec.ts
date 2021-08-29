@@ -17,7 +17,7 @@ describe('@OnSubmit', () => {
   });
 
   interface TestData {
-    property?: string;
+    property?: string | undefined;
   }
 
   let element: Element;

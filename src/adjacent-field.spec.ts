@@ -93,7 +93,7 @@ describe('shares', () => {
     class TestComponent {
 
       @SharedField()
-      field?: Field<string>;
+      field?: Field<string> | undefined;
 
       @SharedField({ share: IndicatorShare })
       readonly button = adjacentToField<unknown>(builder => ({

@@ -132,7 +132,7 @@ export interface FieldNameDef {
    *
    * Either {@link SharedFieldDef.form predefined}, or {@link FormShare default} form share is used when omitted.
    */
-  readonly form?: ShareLocator<FormUnit<any>>;
+  readonly form?: ShareLocator<FormUnit<any>> | undefined;
 
   /**
    * Field name.
@@ -142,6 +142,6 @@ export interface FieldNameDef {
    *
    * Either {@link SharedFieldDef.name predefined}, or property name is used when omitted.
    */
-  readonly name?: string;
+  readonly name?: string | undefined;
 
 }

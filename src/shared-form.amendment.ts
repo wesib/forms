@@ -140,6 +140,6 @@ export interface SharedFormDef<
   /**
    * Target form share.
    */
-  readonly share?: TargetShare<TForm>;
+  readonly share?: TargetShare<TForm> | undefined;
 
 }

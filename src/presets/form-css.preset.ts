@@ -82,14 +82,14 @@ export namespace FormCssPreset {
      *
      * `false` to disable.
      */
-    readonly info?: ScopedFormConfig<Parameters<typeof inCssInfo>[0]>;
+    readonly info?: ScopedFormConfig<Parameters<typeof inCssInfo>[0]> | undefined;
 
     /**
      * CSS error indication options.
      *
      * `false` to disable.
      */
-    readonly error?: ScopedFormConfig<Parameters<typeof inCssError>[0]>;
+    readonly error?: ScopedFormConfig<Parameters<typeof inCssError>[0]> | undefined;
 
   }
 

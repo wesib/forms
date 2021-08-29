@@ -97,14 +97,14 @@ export interface OnSubmitDef<TModel = any, TElt extends HTMLElement = HTMLElemen
    *
    * A {@link FieldShare default} form share is used when omitted.
    */
-  readonly form?: ShareLocator<Form<TModel, TElt>>;
+  readonly form?: ShareLocator<Form<TModel, TElt>> | undefined;
 
   /**
    * Whether to cancel default submit handler.
    *
    * `true` by default.
    */
-  readonly cancel?: boolean;
+  readonly cancel?: boolean | undefined;
 
 }
 

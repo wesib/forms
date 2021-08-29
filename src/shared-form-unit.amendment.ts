@@ -21,11 +21,11 @@ export interface AeSharedFormUnit<
   /**
    * Predefined locator function of the form unit to add the share unit to, or `undefined` when unknown.
    */
-  readonly locateForm?: ShareLocator.Fn<FormUnit<any>>;
+  readonly locateForm?: ShareLocator.Fn<FormUnit<any>> | undefined;
 
   /**
    * Predefined unit name, or `null`/`undefined` when the unit is not to be added to the {@link locateForm form}.
    */
-  readonly name?: string | null;
+  readonly name?: string | null | undefined;
 
 }

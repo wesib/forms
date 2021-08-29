@@ -93,14 +93,14 @@ export namespace FormModePreset {
      *
      * `false` to disable.
      */
-    readonly byValidity?: ScopedFormConfig<Parameters<typeof inModeByValidity>[0]>;
+    readonly byValidity?: ScopedFormConfig<Parameters<typeof inModeByValidity>[0]> | undefined;
 
     /**
      * Whether form field mode should be derived from form element's one.
      *
      * `true` by default. `false` to disable.
      */
-    readonly byForm?: FormScope;
+    readonly byForm?: FormScope | undefined;
 
   }
 

@@ -191,14 +191,14 @@ export interface SharedFieldDef<TField extends Field<TValue>, TValue = Field.Val
   /**
    * Target field share.
    */
-  readonly share?: TargetShare<TField>;
+  readonly share?: TargetShare<TField> | undefined;
 
   /**
    * A locator of form unit to add the shared field to.
    *
    * The {@link FormShare default form share} is used when omitted.
    */
-  readonly form?: ShareLocator<FormUnit<unknown>>;
+  readonly form?: ShareLocator<FormUnit<unknown>> | undefined;
 
   /**
    * Field name.
@@ -208,6 +208,6 @@ export interface SharedFieldDef<TField extends Field<TValue>, TValue = Field.Val
    *
    * Equals to decorated property name when omitted.
    */
-  readonly name?: string;
+  readonly name?: string | undefined;
 
 }

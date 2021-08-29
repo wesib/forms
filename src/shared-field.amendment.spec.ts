@@ -192,7 +192,7 @@ describe('@SharedField', () => {
     class FormComponent {
 
       @SharedForm()
-      form?: Form;
+      form?: Form | undefined;
 
     }
 
