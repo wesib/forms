@@ -8,6 +8,7 @@ export function Field$name(key: string | symbol, name: string | undefined): stri
   if (name) {
     return name;
   }
+
   return Field$nameByKey(key);
 }
 

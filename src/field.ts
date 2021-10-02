@@ -177,7 +177,9 @@ function Field$isDuplicateControls<TValue>(
 ): boolean {
   if (prior?.control !== next?.control) {
     prior?.control.supply.off();
+
     return false;
   }
+
   return true;
 }

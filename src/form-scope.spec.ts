@@ -31,6 +31,7 @@ describe('FormScope', () => {
 
     set(): Supply {
       ++this._it;
+
       return new Supply(() => --this._it);
     }
 

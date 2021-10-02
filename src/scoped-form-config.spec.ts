@@ -31,6 +31,7 @@ describe('ScopedFormConfig', () => {
 
     setup({ value }: { value: string }): Supply {
       this._it.push(value);
+
       return new Supply(() => this._it.splice(this._it.indexOf(value), 1));
     }
 
