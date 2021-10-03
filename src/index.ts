@@ -1,6 +1,6 @@
 /**
  * @packageDocumentation
- * @module Module @wesib/forms
+ * @module @wesib/forms
  */
 export * from './adjacent-field';
 export * from './field';
