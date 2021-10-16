@@ -2,7 +2,15 @@ import { InGroup, inGroup, inList, InList, InParents, inValue } from '@frontmean
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { afterThe } from '@proc7ts/fun-events';
 import { valueProvider } from '@proc7ts/primitives';
-import { BootstrapContext, Component, ComponentClass, ComponentContext, ComponentSlot, FeatureDef } from '@wesib/wesib';
+import {
+  BootstrapContext,
+  Component,
+  ComponentClass,
+  ComponentContext,
+  ComponentElement,
+  ComponentSlot,
+  FeatureDef,
+} from '@wesib/wesib';
 import { MockElement, testDefinition, testElement } from '@wesib/wesib/testing';
 import { Field } from './field';
 import { FieldName, FormName } from './field-name.amendment';
@@ -30,7 +38,7 @@ describe('@SharedField', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
 
     expect(await context.get(FieldShare.share)).toBeInstanceOf(Field);
@@ -47,7 +55,7 @@ describe('@SharedField', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const { control } = (await context.get(FieldShare.share))!;
 
@@ -67,7 +75,7 @@ describe('@SharedField', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const { control } = (await context.get(FieldShare.share))!;
 

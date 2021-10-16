@@ -12,7 +12,7 @@ import {
 import { describe, expect, it } from '@jest/globals';
 import { mapAfter, trackValue } from '@proc7ts/fun-events';
 import { arrayOfElements } from '@proc7ts/primitives';
-import { Component, ComponentContext, ComponentSlot } from '@wesib/wesib';
+import { Component, ComponentContext, ComponentElement, ComponentSlot } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
 import { adjacentToField, adjacentToForm } from './adjacent-field';
 import { Field } from './field';
@@ -72,7 +72,7 @@ describe('shares', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const button = await ButtonShare.share.valueFor(context, { local: true });
 
@@ -106,8 +106,8 @@ describe('shares', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
-    const context = await ComponentSlot.of<TestComponent>(element).whenReady;
+    const element: ComponentElement<TestComponent> = new (await testElement(TestComponent))();
+    const context = await ComponentSlot.of(element).whenReady;
     const indicator = await IndicatorShare.share.valueFor(context, { local: true });
 
     expect(indicator).toBeInstanceOf(Field);

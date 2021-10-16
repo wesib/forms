@@ -36,7 +36,7 @@ export abstract class FormUnit<
     return this.body?.control;
   }
 
-  override sharedBy(sharer: ComponentContext): void {
+  override sharedBy(sharer: ComponentContext<TSharer>): void {
     super.sharedBy(sharer);
     this.read(noop).needs(sharer); // Create controls eagerly.
   }

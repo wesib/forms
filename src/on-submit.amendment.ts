@@ -9,6 +9,7 @@ import {
   ComponentContext,
   ComponentMember,
   ComponentMemberAmendment,
+  DefinitionContext,
 } from '@wesib/wesib';
 import { Form } from './form';
 import { FormShare } from './form.share';
@@ -48,7 +49,7 @@ export function OnSubmit<
       { get, amend }: AeComponentMemberTarget<OnSubmitDef.Method<TModel, TElt, TClass>, TClass>,
   ) => amend({
     componentDef: {
-      define(defContext) {
+      define(defContext: DefinitionContext<InstanceType<TClass>>) {
         defContext.whenComponent(context => {
           context.whenConnected(() => {
 

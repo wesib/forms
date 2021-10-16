@@ -1,7 +1,7 @@
 import { InElement, inFormElement, inGroup } from '@frontmeans/input-aspects';
 import { describe, expect, it } from '@jest/globals';
 import { mapAfter, trackValue } from '@proc7ts/fun-events';
-import { Component, ComponentContext, ComponentSlot } from '@wesib/wesib';
+import { Component, ComponentContext, ComponentElement, ComponentSlot } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Form } from './form';
 import { FormShare } from './form.share';
@@ -42,7 +42,7 @@ describe('@SharedForm', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const form = (await context.get(FormShare.share))!;
 

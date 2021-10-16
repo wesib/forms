@@ -1,7 +1,7 @@
 import { inFormElement, inGroup, inValue } from '@frontmeans/input-aspects';
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { trackValue } from '@proc7ts/fun-events';
-import { Component, ComponentContext, ComponentSlot } from '@wesib/wesib';
+import { Component, ComponentContext, ComponentElement, ComponentSlot } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Form } from './form';
 
@@ -25,7 +25,7 @@ describe('Form', () => {
       class TestComponent {
       }
 
-      const element = new (await testElement(TestComponent))();
+      const element: ComponentElement = new (await testElement(TestComponent))();
 
       context = await ComponentSlot.of(element).whenReady;
     });

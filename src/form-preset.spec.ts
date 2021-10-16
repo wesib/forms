@@ -14,7 +14,14 @@ import { NamespaceAliaser } from '@frontmeans/namespace-aliaser';
 import { newManualRenderScheduler, RenderScheduler } from '@frontmeans/render-scheduler';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { cxConstAsset } from '@proc7ts/context-builder';
-import { Component, ComponentContext, ComponentRenderScheduler, ComponentSlot, DefinitionContext } from '@wesib/wesib';
+import {
+  Component,
+  ComponentContext,
+  ComponentElement,
+  ComponentRenderScheduler,
+  ComponentSlot,
+  DefinitionContext,
+} from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Field } from './field';
 import { FieldShare } from './field.share';
@@ -46,7 +53,7 @@ describe('FormPreset', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const field = await context.get(FieldShare.share);
 
@@ -79,7 +86,7 @@ describe('FormPreset', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const form = await context.get(FormShare.share);
 
@@ -110,7 +117,7 @@ describe('FormPreset', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const field = (await context.get(FieldShare.share))!;
 
@@ -149,7 +156,7 @@ describe('FormPreset', () => {
 
     }
 
-    const element = new (await testElement(TestComponent))();
+    const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
     const form = (await context.get(FormShare.share))!;
 
@@ -209,7 +216,7 @@ describe('FormPreset', () => {
 
       }
 
-      const element = new (await testElement(TestComponent))();
+      const element: ComponentElement = new (await testElement(TestComponent))();
 
       context = await ComponentSlot.of(element).whenReady;
       form = (await context.get(FormShare.share))!;
@@ -286,7 +293,7 @@ describe('FormPreset', () => {
         class TestComponent {
         }
 
-        const element = new (await testElement(TestComponent))();
+        const element: ComponentElement = new (await testElement(TestComponent))();
 
         context = await ComponentSlot.of(element).whenReady;
         formPreset = context.get(FormPreset);
