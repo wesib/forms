@@ -201,10 +201,10 @@ function Form$provider<TModel, TElt extends HTMLElement, TSharer extends object>
           return form();
         },
         get control() {
-          return controls!.control;
+          return controls.control;
         },
         get element() {
-          return controls!.element;
+          return controls.element;
         },
       }),
   );
