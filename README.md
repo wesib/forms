@@ -1,5 +1,4 @@
-Wesib: Forms
-============
+# Wesib: Forms
 
 [![NPM][npm-image]][npm-url]
 [![Build Status][build-status-img]][build-status-link]
@@ -17,10 +16,9 @@ When `@SharedForm()` decorates a container component property with `Form` value,
 When `@SharedField()` decorates a nested component property with `Field` value, this field is added to the form
 shared by closest container, and also makes this field shared.
 
-An `@OnSubmit()`-decorated method is called when the form shared by the component (or its closest container) submitted. 
+An `@OnSubmit()`-decorated method is called when the form shared by the component (or its closest container) submitted.
 
 A `FormPreset` instance provided for component context can be used to modify `Form` and `Field` aspects.
-
 
 [npm-image]: https://img.shields.io/npm/v/@wesib/forms.svg?logo=npm
 [npm-url]: https://www.npmjs.com/package/@wesib/forms
@@ -33,5 +31,5 @@ A `FormPreset` instance provided for component context can be used to modify `Fo
 [github-image]: https://img.shields.io/static/v1?logo=github&label=GitHub&message=project&color=informational
 [github-url]: https://github.com/wesib/forms
 [api-docs-image]: https://img.shields.io/static/v1?logo=typescript&label=API&message=docs&color=informational
-[api-docs-url]: https://wesib.github.io/forms/ 
-[Input Aspects]: https://www.npmjs.com/package/@frontmeans/input-aspects
+[api-docs-url]: https://wesib.github.io/forms/
+[input aspects]: https://www.npmjs.com/package/@frontmeans/input-aspects
