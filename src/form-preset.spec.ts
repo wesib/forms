@@ -23,6 +23,7 @@ import {
   DefinitionContext,
 } from '@wesib/wesib';
 import { MockElement, testElement } from '@wesib/wesib/testing';
+import { Mock } from 'jest-mock';
 import { Field } from './field';
 import { FieldShare } from './field.share';
 import { Form } from './form';
@@ -30,7 +31,7 @@ import { FormPreset } from './form-preset';
 import { FormShare } from './form.share';
 import { SharedField } from './shared-field.amendment';
 import { SharedForm } from './shared-form.amendment';
-import { MockFn, MockObject } from './spec';
+import { MockObject } from './spec';
 
 describe('FormPreset', () => {
   it('is applied to field', async () => {
@@ -124,7 +125,7 @@ describe('FormPreset', () => {
     expect(field.control?.it).toBe('test1');
 
     const preset: MockObject<FormPreset.Spec> = {
-      setupField: jest.fn<void, []>(),
+      setupField: jest.fn<() => void>(),
     };
 
     defContext.perComponent(cxConstAsset(FormPreset, preset));
@@ -163,7 +164,7 @@ describe('FormPreset', () => {
     expect(form.control?.it.counter).toBe(1);
 
     const preset: MockObject<FormPreset.Spec> = {
-      setupForm: jest.fn<void, []>(),
+      setupForm: jest.fn<() => void>(),
     };
 
     defContext.perComponent(cxConstAsset(FormPreset, preset));
@@ -179,7 +180,7 @@ describe('FormPreset', () => {
 
   describe('defaults', () => {
 
-    let mockRenderScheduler: MockFn<RenderScheduler>;
+    let mockRenderScheduler: Mock<RenderScheduler>;
     let context: ComponentContext;
     let form: Form;
     let field: Field<string>;
