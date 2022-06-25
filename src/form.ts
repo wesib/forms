@@ -19,7 +19,6 @@ import { FormUnit } from './form-unit';
 const Form__aspect: Form$Aspect = {
 
   applyTo<TValue>(_control: InControl<TValue>): Form$Applied<TValue> {
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return nullInAspect();
   },
 
