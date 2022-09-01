@@ -35,24 +35,20 @@ import { MockObject } from './spec';
 
 describe('FormPreset', () => {
   it('is applied to field', async () => {
-
     const setup = jest.fn();
 
-    @Component(
-        'test-element',
-        {
-          extend: { type: MockElement },
-          define(defContext) {
-            defContext.perComponent(cxConstAsset(FormPreset, { setupField: setup }));
-          },
-        },
-    )
+    @Component('test-element', {
+      extend: { type: MockElement },
+      define(defContext) {
+        defContext.perComponent(cxConstAsset(FormPreset, { setupField: setup }));
+      },
+    })
     class TestComponent {
 
       @SharedField()
       readonly field = new Field<string>({ control: inValue('test') });
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -64,18 +60,14 @@ describe('FormPreset', () => {
     expect(setup).toHaveBeenCalledWith(expect.objectContaining({ sharer: context, field }));
   });
   it('is applied to form', async () => {
-
     const setup = jest.fn();
 
-    @Component(
-        'test-element',
-        {
-          extend: { type: MockElement },
-          define(defContext) {
-            defContext.perComponent(cxConstAsset(FormPreset, { setupForm: setup }));
-          },
-        },
-    )
+    @Component('test-element', {
+      extend: { type: MockElement },
+      define(defContext) {
+        defContext.perComponent(cxConstAsset(FormPreset, { setupForm: setup }));
+      },
+    })
     class TestComponent {
 
       @SharedForm()
@@ -85,7 +77,7 @@ describe('FormPreset', () => {
         this.form = new Form(Form.forElement(inGroup({}), context.element));
       }
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -98,25 +90,21 @@ describe('FormPreset', () => {
     expect(setup).toHaveBeenCalledWith(expect.objectContaining({ sharer: context, form }));
   });
   it('tracks field rule changes', async () => {
-
     let defContext!: DefinitionContext;
     let controlCounter = 0;
 
-    @Component(
-        'test-element',
-        {
-          extend: { type: MockElement },
-          define(defCtx) {
-            defContext = defCtx;
-          },
-        },
-    )
+    @Component('test-element', {
+      extend: { type: MockElement },
+      define(defCtx) {
+        defContext = defCtx;
+      },
+    })
     class TestComponent {
 
       @SharedField()
       readonly field = new Field<string>(() => ({ control: inValue(`test${++controlCounter}`) }));
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -133,19 +121,15 @@ describe('FormPreset', () => {
     expect(field.control?.it).toBe('test2');
   });
   it('tracks form rule changes', async () => {
-
     let defContext!: DefinitionContext;
     let controlCounter = 0;
 
-    @Component(
-        'test-element',
-        {
-          extend: { type: MockElement },
-          define(defCtx) {
-            defContext = defCtx;
-          },
-        },
-    )
+    @Component('test-element', {
+      extend: { type: MockElement },
+      define(defCtx) {
+        defContext = defCtx;
+      },
+    })
     class TestComponent {
 
       @SharedForm()
@@ -155,7 +139,7 @@ describe('FormPreset', () => {
         this.form = new Form(() => Form.forElement(inGroup({ counter: ++controlCounter }), context.element));
       }
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -179,27 +163,22 @@ describe('FormPreset', () => {
   });
 
   describe('defaults', () => {
-
     let mockRenderScheduler: Mock<RenderScheduler>;
     let context: ComponentContext;
     let form: Form;
     let field: Field<string>;
 
     beforeEach(async () => {
-
       mockRenderScheduler = jest.fn(newManualRenderScheduler());
 
-      @Component(
-          'test-element',
-          {
-            extend: { type: MockElement },
-            feature: {
-              setup(setup) {
-                setup.perComponent(cxConstAsset(ComponentRenderScheduler, mockRenderScheduler));
-              },
-            },
+      @Component('test-element', {
+        extend: { type: MockElement },
+        feature: {
+          setup(setup) {
+            setup.perComponent(cxConstAsset(ComponentRenderScheduler, mockRenderScheduler));
           },
-      )
+        },
+      })
       class TestComponent {
 
         @SharedField()
@@ -210,12 +189,12 @@ describe('FormPreset', () => {
 
         constructor(context: ComponentContext) {
           this.form = Form.by(
-              opts => inGroup<any>({}, opts),
-              opts => inFormElement(context.element, opts),
+            opts => inGroup<any>({}, opts),
+            opts => inFormElement(context.element, opts),
           );
         }
 
-      }
+}
 
       const element: ComponentElement = new (await testElement(TestComponent))();
 
@@ -226,7 +205,6 @@ describe('FormPreset', () => {
 
     describe('form control', () => {
       it('delegates `InRenderScheduler` to `ComponentRenderScheduler`', () => {
-
         const scheduler = form.control!.aspect(InRenderScheduler);
         const opts = { node: document.createElement('div') };
 
@@ -241,7 +219,6 @@ describe('FormPreset', () => {
 
     describe('form element', () => {
       it('delegates `InRenderScheduler` to `ComponentRenderScheduler`', () => {
-
         const scheduler = form.element!.aspect(InRenderScheduler);
         const opts = { node: document.createElement('div') };
 
@@ -256,7 +233,6 @@ describe('FormPreset', () => {
 
     describe('field', () => {
       it('delegates `InRenderScheduler` to `ComponentRenderScheduler`', () => {
-
         const scheduler = field.control!.aspect(InRenderScheduler);
         const opts = { node: document.createElement('div') };
 
@@ -268,12 +244,10 @@ describe('FormPreset', () => {
         expect(field.control!.aspect(InNamespaceAliaser)).toBe(context.get(NamespaceAliaser));
       });
     });
-
   });
 
   describe('instance', () => {
     describe('setupField', () => {
-
       let controlCounter: number;
       let defContext: DefinitionContext;
       let context: ComponentContext;
@@ -282,17 +256,13 @@ describe('FormPreset', () => {
       beforeEach(async () => {
         controlCounter = 0;
 
-        @Component(
-            'test-element',
-            {
-              extend: { type: MockElement },
-              define(defCtx) {
-                defContext = defCtx;
-              },
-            },
-        )
-        class TestComponent {
-        }
+        @Component('test-element', {
+          extend: { type: MockElement },
+          define(defCtx) {
+            defContext = defCtx;
+          },
+        })
+        class TestComponent {}
 
         const element: ComponentElement = new (await testElement(TestComponent))();
 
@@ -302,7 +272,6 @@ describe('FormPreset', () => {
 
       describe('setupField', () => {
         it('reflects rule changes', () => {
-
           const createControls = (builder: Field.Builder<number, any>): Field.Controls<number> => ({
             control: builder.control.build(opts => inValue(++controlCounter, opts)),
           });
@@ -319,14 +288,13 @@ describe('FormPreset', () => {
           formPreset.setupField(builder1);
           expect(createControls(builder1).control.it).toBe(2);
 
-          defContext.perComponent(cxConstAsset(
-              FormPreset,
-              {
-                setupField: (builder: Field.Builder<any, any>) => {
-                  builder.control.setup(ctl => ctl.it += 10);
-                },
+          defContext.perComponent(
+            cxConstAsset(FormPreset, {
+              setupField: (builder: Field.Builder<any, any>) => {
+                builder.control.setup(ctl => (ctl.it += 10));
               },
-          ));
+            }),
+          );
 
           const builder2: Field.Builder<number, any> = {
             sharer: context,
@@ -341,13 +309,12 @@ describe('FormPreset', () => {
 
       describe('setupForm', () => {
         it('reflects rule changes', () => {
-
           const createControls = (
-              builder: Form.Builder<{ counter: number }, any, any>,
+            builder: Form.Builder<{ counter: number }, any, any>,
           ): Form.Controls<{ counter: number }> => Form.forElement(
               builder.control.build(opts => inGroup({ counter: ++controlCounter }, opts)),
               context.element,
-          );
+            );
           const form = new Form<{ counter: number }>(createControls);
 
           form.sharedBy(context);
@@ -362,14 +329,13 @@ describe('FormPreset', () => {
           formPreset.setupForm(builder1);
           expect(createControls(builder1).control.it.counter).toBe(2);
 
-          defContext.perComponent(cxConstAsset(
-              FormPreset,
-              {
-                setupForm: (builder: Form.Builder<any, any, any>) => {
-                  builder.control.setup(ctl => ctl.it.counter += 10);
-                },
+          defContext.perComponent(
+            cxConstAsset(FormPreset, {
+              setupForm: (builder: Form.Builder<any, any, any>) => {
+                builder.control.setup(ctl => (ctl.it.counter += 10));
               },
-          ));
+            }),
+          );
 
           const builder2: Form.Builder<{ counter: number }, any, any> = {
             sharer: context,
@@ -385,7 +351,6 @@ describe('FormPreset', () => {
 
       describe('track', () => {
         it('reflects rule changes', () => {
-
           const receiver = jest.fn();
 
           formPreset.track(receiver);
@@ -397,5 +362,4 @@ describe('FormPreset', () => {
       });
     });
   });
-
 });

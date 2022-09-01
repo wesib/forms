@@ -12,15 +12,9 @@ import { neverSupply, Supply, SupplyPeer } from '@proc7ts/supply';
  * - role name or array of role names - to set up only to controls with that roles,
  * - `null`, `undefined`, or empty array - to set up only controls with default role.
  */
-export type FormScope =
-    | boolean
-    | string
-    | readonly string[]
-    | null
-    | undefined;
+export type FormScope = boolean | string | readonly string[] | null | undefined;
 
 export const FormScope = {
-
   /**
    * Creates an input control setup procedure applied to the given scope.
    *
@@ -35,10 +29,10 @@ export const FormScope = {
    * reverted once this supply cut off.
    */
   createSetup<TControl extends InControl<TValue>, TValue = InControl.ValueType<TControl>>(
-      this: void,
-      scope: FormScope,
-      setup: (this: void, control: TControl) => SupplyPeer,
-      defaultRole = 'default',
+    this: void,
+    scope: FormScope,
+    setup: (this: void, control: TControl) => SupplyPeer,
+    defaultRole = 'default',
   ): (this: void, control: TControl) => Supply {
     if (scope === false) {
       return _control => neverSupply();
@@ -58,9 +52,11 @@ export const FormScope = {
     }
 
     return control => roles.reduce(
-        (supply, role) => control.aspect(InRole).when(role, () => setup(control)).as(supply),
+        (supply, role) => control
+            .aspect(InRole)
+            .when(role, () => setup(control))
+            .as(supply),
         new Supply(),
-    );
+      );
   },
-
 };

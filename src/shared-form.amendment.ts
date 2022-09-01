@@ -15,17 +15,15 @@ import { AeSharedFormUnit } from './shared-form-unit.amendment';
  * @typeParam TClass - Amended component class type.
  */
 export interface AeSharedForm<
-    TForm extends Form<TModel, TElt>,
-    TModel = Form.ModelType<TForm>,
-    TElt extends HTMLElement = Form.ElementType<TForm>,
-    TClass extends ComponentClass = Class>
-    extends AeSharedFormUnit<TForm, TModel, Form.Controls<TModel>, TClass> {
-
+  TForm extends Form<TModel, TElt>,
+  TModel = Form.ModelType<TForm>,
+  TElt extends HTMLElement = Form.ElementType<TForm>,
+  TClass extends ComponentClass = Class,
+> extends AeSharedFormUnit<TForm, TModel, Form.Controls<TModel>, TClass> {
   /**
    * Target form share instance.
    */
   readonly share: Share<TForm>;
-
 }
 
 /**
@@ -40,19 +38,24 @@ export interface AeSharedForm<
  * @typeParam TAmended - Amended form entity type.
  */
 export type SharedFormAmendment<
-    TForm extends Form<TModel, TElt>,
-    TModel = Form.ModelType<TForm>,
-    TElt extends HTMLElement = Form.ElementType<TForm>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> =
-        AeSharedForm<TForm, TModel, TElt, TClass>> =
-    MemberAmendment.ForBase<
-        AeClass<TClass>,
-        AeSharedForm<TForm, TModel, TElt, TClass>,
-        TForm | undefined,
-        TClass,
-        TForm | undefined,
-        TAmended>;
+  TForm extends Form<TModel, TElt>,
+  TModel = Form.ModelType<TForm>,
+  TElt extends HTMLElement = Form.ElementType<TForm>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> = AeSharedForm<
+    TForm,
+    TModel,
+    TElt,
+    TClass
+  >,
+> = MemberAmendment.ForBase<
+  AeClass<TClass>,
+  AeSharedForm<TForm, TModel, TElt, TClass>,
+  TForm | undefined,
+  TClass,
+  TForm | undefined,
+  TAmended
+>;
 
 /**
  * Creates an amendment (and decorator) of component member that {@link FormShare shares} a form.
@@ -68,14 +71,19 @@ export type SharedFormAmendment<
  * @returns New form member amendment.
  */
 export function SharedForm<
-    TForm extends Form<TModel, TElt>,
-    TModel = Form.ModelType<TForm>,
-    TElt extends HTMLElement = Form.ElementType<TForm>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> =
-        AeSharedForm<TForm, TModel, TElt, TClass>>(
-    def?: SharedFormDef<TForm, TModel, TElt>,
-    ...amendments: Amendment<TAmended>[]
+  TForm extends Form<TModel, TElt>,
+  TModel = Form.ModelType<TForm>,
+  TElt extends HTMLElement = Form.ElementType<TForm>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> = AeSharedForm<
+    TForm,
+    TModel,
+    TElt,
+    TClass
+  >,
+>(
+  def?: SharedFormDef<TForm, TModel, TElt>,
+  ...amendments: Amendment<TAmended>[]
 ): SharedFormAmendment<TForm, TModel, TElt, TClass>;
 
 /**
@@ -91,32 +99,38 @@ export function SharedForm<
  * @returns New form member amendment.
  */
 export function SharedForm<
-    TForm extends Form<TModel, TElt>,
-    TModel = Form.ModelType<TForm>,
-    TElt extends HTMLElement = Form.ElementType<TForm>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> =
-        AeSharedForm<TForm, TModel, TElt, TClass>>(
-    ...amendments: Amendment<TAmended>[]
-): SharedFormAmendment<TForm, TModel, TElt, TClass>;
+  TForm extends Form<TModel, TElt>,
+  TModel = Form.ModelType<TForm>,
+  TElt extends HTMLElement = Form.ElementType<TForm>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> = AeSharedForm<
+    TForm,
+    TModel,
+    TElt,
+    TClass
+  >,
+>(...amendments: Amendment<TAmended>[]): SharedFormAmendment<TForm, TModel, TElt, TClass>;
 
 export function SharedForm<
-    TForm extends Form<TModel, TElt>,
-    TModel = Form.ModelType<TForm>,
-    TElt extends HTMLElement = Form.ElementType<TForm>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> =
-        AeSharedForm<TForm, TModel, TElt, TClass>>(
-    defOrAmendment:
-        | SharedFormDef<TForm, TModel, TElt>
-        | Amendment<TAmended> = {},
-    ...amendments: Amendment<TAmended>[]
+  TForm extends Form<TModel, TElt>,
+  TModel = Form.ModelType<TForm>,
+  TElt extends HTMLElement = Form.ElementType<TForm>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedForm<TForm, TModel, TElt, TClass> = AeSharedForm<
+    TForm,
+    TModel,
+    TElt,
+    TClass
+  >,
+>(
+  defOrAmendment: SharedFormDef<TForm, TModel, TElt> | Amendment<TAmended> = {},
+  ...amendments: Amendment<TAmended>[]
 ): SharedAmendment<TForm, TClass, TAmended> {
   if (typeof defOrAmendment === 'function' || isAmendatory(defOrAmendment)) {
     return Shared<TForm, TClass, TAmended>(
-        FormShare as ShareRef<any> as ShareRef<TForm>,
-        defOrAmendment,
-        ...amendments,
+      FormShare as ShareRef<any> as ShareRef<TForm>,
+      defOrAmendment,
+      ...amendments,
     );
   }
 
@@ -133,13 +147,12 @@ export function SharedForm<
  * @typeParam TElt - A type of HTML form element.
  */
 export interface SharedFormDef<
-    TForm extends Form<TModel, TElt>,
-    TModel = Form.ModelType<TForm>,
-    TElt extends HTMLElement = Form.ElementType<TForm>> {
-
+  TForm extends Form<TModel, TElt>,
+  TModel = Form.ModelType<TForm>,
+  TElt extends HTMLElement = Form.ElementType<TForm>,
+> {
   /**
    * Target form share.
    */
   readonly share?: TargetShare<TForm> | undefined;
-
 }

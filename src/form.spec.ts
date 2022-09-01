@@ -6,7 +6,6 @@ import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Form } from './form';
 
 describe('Form', () => {
-
   let form: Form;
 
   beforeEach(() => {
@@ -14,16 +13,13 @@ describe('Form', () => {
   });
 
   describe('controls', () => {
-
     let context: ComponentContext;
 
     beforeEach(async () => {
-
       @Component({
         extend: { type: MockElement },
       })
-      class TestComponent {
-      }
+      class TestComponent {}
 
       const element: ComponentElement = new (await testElement(TestComponent))();
 
@@ -31,7 +27,6 @@ describe('Form', () => {
     });
 
     it('de-duplicated', () => {
-
       const controls = trackValue<Form.Controls<string>>();
 
       form = new Form(() => controls.read);
@@ -95,5 +90,4 @@ describe('Form', () => {
       expect(inValue('test').aspect(Form)).toBeNull();
     });
   });
-
 });

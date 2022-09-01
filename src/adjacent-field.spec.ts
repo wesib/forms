@@ -22,14 +22,13 @@ import { SharedField } from './shared-field.amendment';
 import { SharedForm } from './shared-form.amendment';
 
 describe('shares', () => {
-
   class ButtonShare extends FieldShare {
 
     constructor() {
       super('button');
     }
 
-  }
+}
 
   class IndicatorShare extends FieldShare {
 
@@ -37,16 +36,12 @@ describe('shares', () => {
       super('indicator');
     }
 
-  }
+}
 
   it('declares button', async () => {
-
-    @Component(
-        'test-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('test-element', {
+      extend: { type: MockElement },
+    })
     class TestComponent {
 
       @SharedForm()
@@ -54,23 +49,20 @@ describe('shares', () => {
 
       @SharedField({ share: ButtonShare })
       readonly button = adjacentToForm<void>(builder => ({
-        control: builder.control.build(opts => inSubmitButton(
-            document.createElement('button'),
-            {
-              ...opts,
-              form: builder.adjusted.control,
-            },
-        )),
+        control: builder.control.build(opts => inSubmitButton(document.createElement('button'), {
+            ...opts,
+            form: builder.adjusted.control,
+          })),
       }));
 
       constructor(context: ComponentContext) {
         this.form = Form.by(
-            opts => inGroup({}, opts),
-            opts => inFormElement(context.element, opts),
+          opts => inGroup({}, opts),
+          opts => inFormElement(context.element, opts),
         );
       }
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -81,15 +73,11 @@ describe('shares', () => {
   });
 
   it('declares error indicator', async () => {
-
     const hasControls = trackValue(false);
 
-    @Component(
-        'test-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('test-element', {
+      extend: { type: MockElement },
+    })
     class TestComponent {
 
       @SharedField()
@@ -97,14 +85,15 @@ describe('shares', () => {
 
       @SharedField({ share: IndicatorShare })
       readonly button = adjacentToField<unknown>(builder => ({
-        control: builder.control.build(
-            opts => builder.adjusted.control
-                .convert(InStyledElement.to(document.createElement('div')), ...arrayOfElements(opts.aspects))
-                .setup(InCssClasses, css => css.add(inCssError())),
-        ),
+        control: builder.control.build(opts => builder.adjusted.control
+            .convert(
+              InStyledElement.to(document.createElement('div')),
+              ...arrayOfElements(opts.aspects),
+            )
+            .setup(InCssClasses, css => css.add(inCssError()))),
       }));
 
-    }
+}
 
     const element: ComponentElement<TestComponent> = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -117,7 +106,7 @@ describe('shares', () => {
         mapAfter(hasControls => hasControls
             ? { control: builder.control.build(opts => inValue('test', opts)) }
             : undefined),
-    ));
+      ));
     expect(indicator?.control).toBeUndefined();
 
     hasControls.it = true;

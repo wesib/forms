@@ -33,48 +33,36 @@ export class FormModePreset extends AbstractFormPreset {
    */
   constructor(options: FormModePreset.Options = {}) {
     super();
-    this._byValidity = ScopedFormConfig.createSetup(
-        options.byValidity,
-        opts => {
+    this._byValidity = ScopedFormConfig.createSetup(options.byValidity, opts => {
+      const src = inModeByValidity(opts);
 
-          const src = inModeByValidity(opts);
+      return control => control.aspect(InMode).derive(src);
+    });
+    this._byForm = FormScope.createSetup(options.byForm, control => control.aspect(InParents).read.do(
+        consumeEvents(parents => {
+          const supply = new Supply();
 
-          return control => control.aspect(InMode).derive(src);
-        },
-    );
-    this._byForm = FormScope.createSetup(
-        options.byForm,
-        control => control.aspect(InParents).read.do(
-            consumeEvents(parents => {
+          itsEach(parents, ({ parent }) => {
+            const form = parent.aspect(Form);
 
-              const supply = new Supply();
+            if (form) {
+              control.aspect(InMode).derive(form.element.aspect(InMode)).as(supply);
+            }
+          });
 
-              itsEach(
-                  parents,
-                  ({ parent }) => {
-
-                    const form = parent.aspect(Form);
-
-                    if (form) {
-                      control.aspect(InMode).derive(form.element.aspect(InMode)).as(supply);
-                    }
-                  },
-              );
-
-              return supply;
-            }),
-        ),
-    );
+          return supply;
+        }),
+      ));
   }
 
   override setupField<TValue, TSharer extends object>(
-      builder: Field.Builder<TValue, TSharer>,
+    builder: Field.Builder<TValue, TSharer>,
   ): void {
     builder.control.setup(this._byForm);
   }
 
   override setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
-      builder: Form.Builder<TModel, TElt, TSharer>,
+    builder: Form.Builder<TModel, TElt, TSharer>,
   ): void {
     builder.control.setup(this._byValidity);
   }
@@ -82,12 +70,10 @@ export class FormModePreset extends AbstractFormPreset {
 }
 
 export namespace FormModePreset {
-
   /**
    * Form mode preset options.
    */
   export interface Options {
-
     /**
      * Whether to build a form mode by its validity options.
      *
@@ -101,7 +87,5 @@ export namespace FormModePreset {
      * `true` by default. `false` to disable.
      */
     readonly byForm?: FormScope | undefined;
-
   }
-
 }

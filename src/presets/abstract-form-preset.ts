@@ -5,7 +5,7 @@ import { Field } from '../field';
 import { Form } from '../form';
 import { FormPreset } from '../form-preset';
 
-const AbstractFormPreset$map = (/*#__PURE__*/ new WeakMap<typeof AbstractFormPreset, FeatureDef>());
+const AbstractFormPreset$map = /*#__PURE__*/ new WeakMap<typeof AbstractFormPreset, FeatureDef>();
 
 /**
  * Abstract form preset implementation.
@@ -17,13 +17,12 @@ const AbstractFormPreset$map = (/*#__PURE__*/ new WeakMap<typeof AbstractFormPre
  * `ContextBuilder` interface. Thus is can be passed to context value registration method.
  */
 export abstract class AbstractFormPreset
-    implements FormPreset.Spec, CxAsset.Placer<FormPreset.Tracker, FormPreset.Spec> {
+  implements FormPreset.Spec, CxAsset.Placer<FormPreset.Tracker, FormPreset.Spec> {
 
   /**
    * Feature definition of the preset.
    */
   static get [FeatureDef__symbol](): FeatureDef {
-
     const found = AbstractFormPreset$map.get(this);
 
     if (found) {
@@ -45,18 +44,16 @@ export abstract class AbstractFormPreset
   readonly entry: CxEntry<FormPreset.Tracker, FormPreset.Spec> = FormPreset;
 
   placeAsset(
-      _target: CxEntry.Target<FormPreset.Tracker, FormPreset.Spec>,
-      collector: CxAsset.Collector<FormPreset.Spec>,
+    _target: CxEntry.Target<FormPreset.Tracker, FormPreset.Spec>,
+    collector: CxAsset.Collector<FormPreset.Spec>,
   ): void {
     collector(this);
   }
 
-  setupField?<TValue, TSharer extends object>(
-      builder: Field.Builder<TValue, TSharer>,
-  ): void;
+  setupField?<TValue, TSharer extends object>(builder: Field.Builder<TValue, TSharer>): void;
 
   setupForm?<TModel, TElt extends HTMLElement, TSharer extends object>(
-      builder: Form.Builder<TModel, TElt, TSharer>,
+    builder: Form.Builder<TModel, TElt, TSharer>,
   ): void;
 
 }

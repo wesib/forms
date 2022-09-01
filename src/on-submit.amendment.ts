@@ -26,62 +26,60 @@ import { FormShare } from './form.share';
  * @returns New component property decorator.
  */
 export function OnSubmit<
-    TModel = any, /* `any`, because decorators fail to infer the model */
-    TElt extends HTMLElement = HTMLElement,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeComponentMember<OnSubmitDef.Method<TModel, TElt, TClass>, TClass> =
-        AeComponentMember<OnSubmitDef.Method<TModel, TElt, TClass>, TClass>>(
-    def: OnSubmitDef<TModel, TElt> = {},
+  TModel = any /* `any`, because decorators fail to infer the model */,
+  TElt extends HTMLElement = HTMLElement,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeComponentMember<
+    OnSubmitDef.Method<TModel, TElt, TClass>,
+    TClass
+  > = AeComponentMember<OnSubmitDef.Method<TModel, TElt, TClass>, TClass>,
+>(
+  def: OnSubmitDef<TModel, TElt> = {},
 ): ComponentMemberAmendment<
-    OnSubmitDef.Method<TModel, TElt, TClass>,
-    TClass,
-    OnSubmitDef.Method<TModel, TElt, TClass>,
-    TAmended> {
-
+  OnSubmitDef.Method<TModel, TElt, TClass>,
+  TClass,
+  OnSubmitDef.Method<TModel, TElt, TClass>,
+  TAmended
+> {
   const { form: formRef = FormShare, cancel = true } = def;
   const locateForm = shareLocator(formRef, { share: FormShare, local: 'too' });
 
   return ComponentMember<
-      OnSubmitDef.Method<TModel, TElt, TClass>,
-      TClass,
-      OnSubmitDef.Method<TModel, TElt, TClass>,
-      TAmended>((
-      { get, amend }: AeComponentMemberTarget<OnSubmitDef.Method<TModel, TElt, TClass>, TClass>,
-  ) => amend({
-    componentDef: {
-      define(defContext: DefinitionContext<InstanceType<TClass>>) {
-        defContext.whenComponent(context => {
-          context.whenConnected(() => {
+    OnSubmitDef.Method<TModel, TElt, TClass>,
+    TClass,
+    OnSubmitDef.Method<TModel, TElt, TClass>,
+    TAmended
+  >(({ get, amend }: AeComponentMemberTarget<OnSubmitDef.Method<TModel, TElt, TClass>, TClass>) => amend({
+      componentDef: {
+        define(defContext: DefinitionContext<InstanceType<TClass>>) {
+          defContext.whenComponent(context => {
+            context.whenConnected(() => {
+              const { component } = context;
 
-            const { component } = context;
+              locateForm(context)
+                .do(
+                  consumeEvents((form?: Form<TModel, TElt>, _sharer?: ComponentContext) => {
+                    const controls = form?.body;
 
-            locateForm(context).do(
-                consumeEvents((form?: Form<TModel, TElt>, _sharer?: ComponentContext) => {
+                    if (!controls) {
+                      return;
+                    }
 
-                  const controls = form?.body;
+                    let onSubmit = controls.element.events.on('submit');
 
-                  if (!controls) {
-                    return;
-                  }
+                    if (cancel) {
+                      onSubmit = onSubmit.do(handleDomEvents(false));
+                    }
 
-                  let onSubmit = controls.element.events.on('submit');
-
-                  if (cancel) {
-                    onSubmit = onSubmit.do(
-                        handleDomEvents(false),
-                    );
-                  }
-
-                  return onSubmit(
-                      event => get(component).call(component, controls, event),
-                  );
-                }),
-            ).needs(context);
+                    return onSubmit(event => get(component).call(component, controls, event));
+                  }),
+                )
+                .needs(context);
+            });
           });
-        });
+        },
       },
-    },
-  }));
+    }));
 }
 
 /**
@@ -90,7 +88,6 @@ export function OnSubmit<
  * Configures {@link OnSubmit @OnSubmit} component property decorator.
  */
 export interface OnSubmitDef<TModel = any, TElt extends HTMLElement = HTMLElement> {
-
   /**
    * A form to submit.
    *
@@ -106,11 +103,9 @@ export interface OnSubmitDef<TModel = any, TElt extends HTMLElement = HTMLElemen
    * `true` by default.
    */
   readonly cancel?: boolean | undefined;
-
 }
 
 export namespace OnSubmitDef {
-
   /**
    * A signature of component method that handles form submit.
    *
@@ -118,11 +113,14 @@ export namespace OnSubmitDef {
    * @typeParam TElt - A type of HTML form element.
    * @typeParam TClass - A type of component class.
    */
-  export type Method<TModel, TElt extends HTMLElement = HTMLElement, TClass extends ComponentClass = Class> =
-  /**
-   * @param form - A body of the form about to be submitted.
-   * @param event - A submit event.
-   */
-      (form: Form.Body<TModel, TElt, InstanceType<TClass>>, event: Event) => void;
-
+  export type Method<
+    TModel,
+    TElt extends HTMLElement = HTMLElement,
+    TClass extends ComponentClass = Class,
+  > =
+    /**
+     * @param form - A body of the form about to be submitted.
+     * @param event - A submit event.
+     */
+    (form: Form.Body<TModel, TElt, InstanceType<TClass>>, event: Event) => void;
 }

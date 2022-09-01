@@ -9,7 +9,6 @@ import { OnSubmit, OnSubmitDef } from './on-submit.amendment';
 import { SharedForm, SharedFormDef } from './shared-form.amendment';
 
 describe('@OnSubmit', () => {
-
   let doc: Document;
 
   beforeEach(() => {
@@ -32,20 +31,19 @@ describe('@OnSubmit', () => {
   });
 
   it('calls decorated method on submit', async () => {
-
     const onSubmit = jest.fn();
 
     await bootstrap(onSubmit);
 
     formElement.requestSubmit();
     expect(onSubmit).toHaveBeenCalledWith(
-        expect.objectContaining({
-          control: expect.any(InGroup),
-          element: expect.objectContaining({ element: expect.objectContaining({ tagName: 'FORM' }) }),
-        }),
-        expect.objectContaining({
-          type: 'submit',
-        }),
+      expect.objectContaining({
+        control: expect.any(InGroup),
+        element: expect.objectContaining({ element: expect.objectContaining({ tagName: 'FORM' }) }),
+      }),
+      expect.objectContaining({
+        type: 'submit',
+      }),
     );
   });
   it('cancels default event handler by default', async () => {
@@ -63,7 +61,6 @@ describe('@OnSubmit', () => {
     expect(formElement.dispatchEvent(submit)).toBe(true);
   });
   it('does not submit when there is no form', async () => {
-
     const defaultSubmit = jest.fn((e: Event) => e.preventDefault());
 
     formElement.addEventListener('submit', defaultSubmit);
@@ -77,23 +74,22 @@ describe('@OnSubmit', () => {
   });
 
   async function bootstrap(
-      onSubmit: (form: Form<TestData>, event: Event) => void,
-      def?: OnSubmitDef,
-      formDef?: SharedFormDef<Form<TestData>>,
+    onSubmit: (form: Form<TestData>, event: Event) => void,
+    def?: OnSubmitDef,
+    formDef?: SharedFormDef<Form<TestData>>,
   ): Promise<ComponentContext> {
-
     class TestElement {
 
       @SharedForm(formDef)
       form = Form.by<TestData>(
-          opts => inGroup({}, opts),
-          opts => inFormElement(formElement, opts),
+        opts => inGroup({}, opts),
+        opts => inFormElement(formElement, opts),
       );
 
       @OnSubmit(def)
       readonly onSubmit = onSubmit;
 
-    }
+}
 
     const defContext = await testDefinition(TestElement);
 

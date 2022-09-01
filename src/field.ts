@@ -1,5 +1,11 @@
 import { InBuilder, InControl } from '@frontmeans/input-aspects';
-import { AfterEvent, afterValue, deduplicateAfter_, digAfter_, mapAfter } from '@proc7ts/fun-events';
+import {
+  AfterEvent,
+  afterValue,
+  deduplicateAfter_,
+  digAfter_,
+  mapAfter,
+} from '@proc7ts/fun-events';
 import { valueRecipe } from '@proc7ts/primitives';
 import { Shareable } from '@wesib/generic';
 import { ComponentContext } from '@wesib/wesib';
@@ -18,7 +24,11 @@ import { FormUnit } from './form-unit';
  * @typeParam TValue - Field value type.
  * @typeParam TSharer - Field sharer component type.
  */
-export class Field<TValue, TSharer extends object = any> extends FormUnit<TValue, Field.Body<TValue>, TSharer> {
+export class Field<TValue, TSharer extends object = any> extends FormUnit<
+  TValue,
+  Field.Body<TValue>,
+  TSharer
+> {
 
   /**
    * Creates a form field by the given field control factory.
@@ -28,7 +38,7 @@ export class Field<TValue, TSharer extends object = any> extends FormUnit<TValue
    * @returns New field instance.
    */
   static by<TValue, TSharer extends object = any>(
-      factory: InControl.Factory<InControl<TValue>>,
+    factory: InControl.Factory<InControl<TValue>>,
   ): Field<TValue, TSharer> {
     return new this(this.providerBy(factory));
   }
@@ -41,7 +51,7 @@ export class Field<TValue, TSharer extends object = any> extends FormUnit<TValue
    * @returns New form field controls provider.
    */
   static providerBy<TValue, TSharer extends object = any>(
-      factory: InControl.Factory<InControl<TValue>>,
+    factory: InControl.Factory<InControl<TValue>>,
   ): Field.Provider<TValue, TSharer> {
     return builder => ({
       control: builder.control.build(factory),
@@ -64,7 +74,6 @@ export class Field<TValue, TSharer extends object = any> extends FormUnit<TValue
 }
 
 export namespace Field {
-
   /**
    * A value type of the given form field.
    *
@@ -78,12 +87,10 @@ export namespace Field {
    * @typeParam TValue - Input value type.
    */
   export interface Controls<TValue> extends FormUnit.Controls<TValue> {
-
     /**
      * Field input control.
      */
     readonly control: InControl<TValue>;
-
   }
 
   /**
@@ -92,7 +99,6 @@ export namespace Field {
    * @typeParam TValue - Input value type.
    */
   export interface Body<TValue, TSharer extends object = any> extends FormUnit.Controls<TValue> {
-
     /**
      * A field the input control belongs to.
      */
@@ -102,7 +108,6 @@ export namespace Field {
      * Field input control.
      */
     readonly control: InControl<TValue>;
-
   }
 
   /**
@@ -112,7 +117,6 @@ export namespace Field {
    * @typeParam TSharer - Field sharer component type.
    */
   export interface Builder<TValue, TSharer extends object> {
-
     /**
      * Sharer component context.
      */
@@ -127,7 +131,6 @@ export namespace Field {
      * Field input control builder.
      */
     readonly control: InBuilder<InControl<TValue>, TValue>;
-
   }
 
   /**
@@ -137,25 +140,23 @@ export namespace Field {
    * @typeParam TSharer - Field sharer component type.
    */
   export type Provider<TValue, TSharer extends object = any> =
-  /**
-   * @param builder - Field builder.
-   *
-   * @returns Either field controls instance, or an `AfterEvent` keeper reporting one.
-   */
-      (
-          this: void,
-          builder: Builder<TValue, TSharer>,
-      ) => Controls<TValue> | AfterEvent<[Controls<TValue>?]>;
-
+    /**
+     * @param builder - Field builder.
+     *
+     * @returns Either field controls instance, or an `AfterEvent` keeper reporting one.
+     */
+    (
+      this: void,
+      builder: Builder<TValue, TSharer>,
+    ) => Controls<TValue> | AfterEvent<[Controls<TValue>?]>;
 }
 
 function Field$provider<TValue, TSharer extends object>(
-    field: () => Field<TValue, TSharer>,
-    provider: Field.Provider<TValue>,
+  field: () => Field<TValue, TSharer>,
+  provider: Field.Provider<TValue>,
 ): Shareable.Provider<Field.Body<TValue> | undefined, TSharer> {
   return sharer => sharer.get(FormPreset).track.do(
       digAfter_(preset => {
-
         const builder: Field.Builder<TValue, TSharer> = {
           sharer,
           field: field(),
@@ -168,12 +169,12 @@ function Field$provider<TValue, TSharer extends object>(
       }),
       deduplicateAfter_(Field$isDuplicateControls, ([controls]) => controls),
       mapAfter(controls => controls && { field: field(), control: controls.control }),
-  );
+    );
 }
 
 function Field$isDuplicateControls<TValue>(
-    prior?: Field.Controls<TValue>,
-    next?: Field.Controls<TValue>,
+  prior?: Field.Controls<TValue>,
+  next?: Field.Controls<TValue>,
 ): boolean {
   if (prior?.control !== next?.control) {
     prior?.control.supply.off();

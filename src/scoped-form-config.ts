@@ -20,13 +20,12 @@ import { FormScope } from './form-scope';
  * @typeParam TOptions - A type of setup options.
  */
 export type ScopedFormConfig<TOptions> =
-    | TOptions
-    | FormScope
-    | readonly [TOptions, FormScope?]
-    | readonly [TOptions, ...string[]];
+  | TOptions
+  | FormScope
+  | readonly [TOptions, FormScope?]
+  | readonly [TOptions, ...string[]];
 
 export const ScopedFormConfig = {
-
   /**
    * Creates an input control setup procedure that applies the given configuration to appropriate scope.
    *
@@ -42,21 +41,15 @@ export const ScopedFormConfig = {
    * @returns A setup procedure accepting target control as parameter and returning a setup supply. The setup is
    * reverted once this supply cut off.
    */
-  createSetup<
-      TOptions,
-      TControl extends InControl<TValue>,
-      TValue = InControl.ValueType<TControl>,
-      >(
-      config: ScopedFormConfig<TOptions>,
-      createSetup: (this: void, options?: TOptions) => (this: void, control: TControl) => SupplyPeer,
-      defaultRole?: string,
+  createSetup<TOptions, TControl extends InControl<TValue>, TValue = InControl.ValueType<TControl>>(
+    config: ScopedFormConfig<TOptions>,
+    createSetup: (this: void, options?: TOptions) => (this: void, control: TControl) => SupplyPeer,
+    defaultRole?: string,
   ): (this: void, control: TControl) => Supply {
-
     let scope: FormScope;
     let options: TOptions | undefined;
 
     if (Array.isArray(config)) {
-
       const [first, ...rest] = config;
 
       if (ScopedFormConfig$isOptions(first)) {
@@ -71,17 +64,12 @@ export const ScopedFormConfig = {
       scope = config;
     }
 
-    return FormScope.createSetup<TControl, TValue>(
-        scope,
-        createSetup(options),
-        defaultRole,
-    );
+    return FormScope.createSetup<TControl, TValue>(scope, createSetup(options), defaultRole);
   },
-
 };
 
 function ScopedFormConfig$isOptions<TOptions>(
-    config: TOptions | string | boolean | undefined,
+  config: TOptions | string | boolean | undefined,
 ): config is TOptions {
   return config != null && typeof config !== 'string' && typeof config !== 'boolean';
 }

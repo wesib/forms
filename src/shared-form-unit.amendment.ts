@@ -12,12 +12,11 @@ import { FormUnit } from './form-unit';
  * @typeParam TClass - Amended component class type.
  */
 export interface AeSharedFormUnit<
-    TUnit extends FormUnit<TUnitValue, TControls>,
-    TUnitValue = FormUnit.ValueType<TUnit>,
-    TControls extends FormUnit.Controls<TUnitValue> = FormUnit.ControlsType<TUnit>,
-    TClass extends ComponentClass = Class>
-    extends AeShared<TUnit, TClass> {
-
+  TUnit extends FormUnit<TUnitValue, TControls>,
+  TUnitValue = FormUnit.ValueType<TUnit>,
+  TControls extends FormUnit.Controls<TUnitValue> = FormUnit.ControlsType<TUnit>,
+  TClass extends ComponentClass = Class,
+> extends AeShared<TUnit, TClass> {
   /**
    * Predefined locator function of the form unit to add the share unit to, or `undefined` when unknown.
    */
@@ -27,5 +26,4 @@ export interface AeSharedFormUnit<
    * Predefined unit name, or `null`/`undefined` when the unit is not to be added to the {@link locateForm form}.
    */
   readonly name?: string | null | undefined;
-
 }

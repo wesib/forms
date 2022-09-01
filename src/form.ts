@@ -9,7 +9,13 @@ import {
   InFormElement,
   nullInAspect,
 } from '@frontmeans/input-aspects';
-import { AfterEvent, afterValue, deduplicateAfter_, digAfter_, mapAfter } from '@proc7ts/fun-events';
+import {
+  AfterEvent,
+  afterValue,
+  deduplicateAfter_,
+  digAfter_,
+  mapAfter,
+} from '@proc7ts/fun-events';
 import { lazyValue, valueRecipe } from '@proc7ts/primitives';
 import { Shareable } from '@wesib/generic';
 import { ComponentContext } from '@wesib/wesib';
@@ -17,11 +23,9 @@ import { FormPreset } from './form-preset';
 import { FormUnit } from './form-unit';
 
 const Form__aspect: Form$Aspect = {
-
   applyTo<TValue>(_control: InControl<TValue>): Form$Applied<TValue> {
     return nullInAspect();
   },
-
 };
 
 /**
@@ -39,8 +43,11 @@ const Form__aspect: Form$Aspect = {
  * @typeParam TElt - A type of HTML form element.
  * @typeParam TSharer - Form sharer component type.
  */
-export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer extends object = any>
-    extends FormUnit<TModel, Form.Body<TModel, TElt>, TSharer> {
+export class Form<
+  TModel = any,
+  TElt extends HTMLElement = HTMLElement,
+  TSharer extends object = any,
+> extends FormUnit<TModel, Form.Body<TModel, TElt>, TSharer> {
 
   /**
    * Builds a user input form for the given form control and HTML element.
@@ -52,9 +59,9 @@ export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer 
    * @returns New form instance.
    */
   static forElement<TModel, TElt extends HTMLElement>(
-      control: InControl<TModel>,
-      element: TElt,
-      options?: Omit<InFormElement.Options, 'form'>,
+    control: InControl<TModel>,
+    element: TElt,
+    options?: Omit<InFormElement.Options, 'form'>,
   ): Form.Controls<TModel, TElt> {
     return {
       control,
@@ -70,15 +77,14 @@ export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer 
    *
    * @returns New form instance.
    */
-  static by<
-      TModel,
-      TElt extends HTMLElement = HTMLElement,
-      TSharer extends object = any>(
-      factory: InControl.Factory<InControl<TModel>, TModel>,
-      elementFactory: (
-          this: void,
-          options: Parameters<InControl.Factory<InFormElement<TElt>, void>>[0] & { form: InControl<TModel>},
-      ) => InFormElement<TElt>,
+  static by<TModel, TElt extends HTMLElement = HTMLElement, TSharer extends object = any>(
+    factory: InControl.Factory<InControl<TModel>, TModel>,
+    elementFactory: (
+      this: void,
+      options: Parameters<InControl.Factory<InFormElement<TElt>, void>>[0] & {
+        form: InControl<TModel>;
+      },
+    ) => InFormElement<TElt>,
   ): Form<TModel, TElt, TSharer> {
     return new this(this.providerBy(factory, elementFactory));
   }
@@ -91,29 +97,27 @@ export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer 
    *
    * @returns New form controls provider.
    */
-  static providerBy<
-      TModel,
-      TElt extends HTMLElement = HTMLElement,
-      TSharer extends object = any>(
-      factory: InControl.Factory<InControl<TModel>, TModel>,
-      elementFactory: (
-          this: void,
-          options: Parameters<InControl.Factory<InFormElement<TElt>, void>>[0] & { form: InControl<TModel>},
-      ) => InFormElement<TElt>,
+  static providerBy<TModel, TElt extends HTMLElement = HTMLElement, TSharer extends object = any>(
+    factory: InControl.Factory<InControl<TModel>, TModel>,
+    elementFactory: (
+      this: void,
+      options: Parameters<InControl.Factory<InFormElement<TElt>, void>>[0] & {
+        form: InControl<TModel>;
+      },
+    ) => InFormElement<TElt>,
   ): Form.Provider<TModel, TElt, TSharer> {
     return builder => {
-
       let control = (): InControl<TModel> => builder.control.build(
           // Allow recurrent access to `Form` aspect during control setup.
           opts => (control = lazyValue(() => factory(opts)))(),
-      );
+        );
       let element = (): InFormElement<TElt> => builder.element.build(
           // Allow recurrent access to `Form` aspect during control setup.
           opts => (element = lazyValue(() => elementFactory({
-            form: control(),
-            ...opts,
-          })))(),
-      );
+                form: control(),
+                ...opts,
+              })))(),
+        );
 
       return {
         get control() {
@@ -141,9 +145,7 @@ export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer 
    *
    * @param controls - Either form controls instance, or its provider.
    */
-  constructor(
-      controls: Form.Controls<TModel, TElt> | Form.Provider<TModel, TElt, TSharer>,
-  ) {
+  constructor(controls: Form.Controls<TModel, TElt> | Form.Provider<TModel, TElt, TSharer>) {
     super(Form$provider(() => this, valueRecipe(controls)));
   }
 
@@ -164,25 +166,23 @@ export class Form<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer 
 }
 
 function Form$provider<TModel, TElt extends HTMLElement, TSharer extends object>(
-    form: () => Form<TModel, TElt, TSharer>,
-    provider: Form.Provider<TModel, TElt, TSharer>,
+  form: () => Form<TModel, TElt, TSharer>,
+  provider: Form.Provider<TModel, TElt, TSharer>,
 ): Shareable.Provider<Form.Body<TModel, TElt> | undefined, TSharer> {
-
   const formAspect: InConverter.Aspect.Factory<any> = control => ({
     applyAspect<TInstance, TKind extends InAspect.Application.Kind>(
-        _aspect: InAspect<any, any>,
+      _aspect: InAspect<any, any>,
     ): InAspect.Application.Result<TInstance, any, TKind> | undefined {
       return inconvertibleInAspect(
-          control,
-          Form,
-          form() as Form.Whole,
+        control,
+        Form,
+        form() as Form.Whole,
       ) as InAspect.Application.Result<TInstance, any, TKind>;
     },
   });
 
   return sharer => sharer.get(FormPreset).track.do(
       digAfter_(preset => {
-
         const builder: Form.Builder<TModel, TElt, TSharer> = {
           sharer,
           form: form(),
@@ -195,25 +195,26 @@ function Form$provider<TModel, TElt extends HTMLElement, TSharer extends object>
         return afterValue(provider(builder));
       }),
       deduplicateAfter_(Form$isDuplicateControls, ([controls]) => controls),
-      mapAfter(controls => controls && {
-        get form() {
-          return form();
-        },
-        get control() {
-          return controls.control;
-        },
-        get element() {
-          return controls.element;
-        },
-      }),
-  );
+      mapAfter(
+        controls => controls && {
+            get form() {
+              return form();
+            },
+            get control() {
+              return controls.control;
+            },
+            get element() {
+              return controls.element;
+            },
+          },
+      ),
+    );
 }
 
 function Form$isDuplicateControls<TModel, TElt extends HTMLElement>(
-    prior: Form.Controls<TModel, TElt> | undefined,
-    next: Form.Controls<TModel, TElt> | undefined,
+  prior: Form.Controls<TModel, TElt> | undefined,
+  next: Form.Controls<TModel, TElt> | undefined,
 ): boolean {
-
   let duplicate = true;
 
   if (prior?.control !== next?.control) {
@@ -229,7 +230,6 @@ function Form$isDuplicateControls<TModel, TElt extends HTMLElement>(
 }
 
 export namespace Form {
-
   /**
    * A whole form instance containing controls.
    *
@@ -238,11 +238,10 @@ export namespace Form {
    * @typeParam TSharer - Form sharer component type.
    */
   export interface Whole<
-      TModel = any,
-      TElt extends HTMLElement = HTMLElement,
-      TSharer extends object = any>
-      extends Form<TModel, TElt, TSharer> {
-
+    TModel = any,
+    TElt extends HTMLElement = HTMLElement,
+    TSharer extends object = any,
+  > extends Form<TModel, TElt, TSharer> {
     /**
      * Form body.
      */
@@ -260,7 +259,6 @@ export namespace Form {
      * element issuing a `submit` event.
      */
     readonly element: InFormElement<any>;
-
   }
 
   /**
@@ -275,7 +273,9 @@ export namespace Form {
    *
    * @typeParam TForm - Form type.
    */
-  export type ElementType<TForm extends Form<any, any>> = TForm extends Form<any, infer TElt> ? TElt : never;
+  export type ElementType<TForm extends Form<any, any>> = TForm extends Form<any, infer TElt>
+    ? TElt
+    : never;
 
   /**
    * Form controls.
@@ -283,8 +283,8 @@ export namespace Form {
    * @typeParam TModel - A model type of the form, i.e. a type of its control value.
    * @typeParam TElt - A type of HTML form element.
    */
-  export interface Controls<TModel, TElt extends HTMLElement = HTMLElement> extends FormUnit.Controls<TModel> {
-
+  export interface Controls<TModel, TElt extends HTMLElement = HTMLElement>
+    extends FormUnit.Controls<TModel> {
     /**
      * Submittable form input control.
      */
@@ -297,7 +297,6 @@ export namespace Form {
      * element issuing a `submit` event.
      */
     readonly element: InFormElement<TElt>;
-
   }
 
   /**
@@ -308,11 +307,10 @@ export namespace Form {
    * @typeParam TSharer - Form sharer component type.
    */
   export interface Body<
-      TModel,
-      TElt extends HTMLElement = HTMLElement,
-      TSharer extends object = any,
-      > extends FormUnit.Controls<TModel> {
-
+    TModel,
+    TElt extends HTMLElement = HTMLElement,
+    TSharer extends object = any,
+  > extends FormUnit.Controls<TModel> {
     /**
      * A form the controls belong to.
      */
@@ -330,7 +328,6 @@ export namespace Form {
      * element issuing a `submit` event.
      */
     readonly element: InFormElement<TElt>;
-
   }
 
   /**
@@ -340,7 +337,6 @@ export namespace Form {
    * @typeParam TElt - A type of HTML form element.
    */
   export interface Builder<TModel, TElt extends HTMLElement, TSharer extends object> {
-
     /**
      * Sharer component context.
      */
@@ -363,7 +359,6 @@ export namespace Form {
      * element issuing a `submit` event.
      */
     readonly element: InBuilder<InFormElement<TElt>, void>;
-
   }
 
   /**
@@ -373,46 +368,45 @@ export namespace Form {
    * @typeParam TElt - A type of HTML form element.
    * @typeParam TSharer - Form sharer component type.
    */
-  export type Provider<TModel = any, TElt extends HTMLElement = HTMLElement, TSharer extends object = object> =
-  /**
-   * @param builder - Form builder.
-   *
-   * @returns Either form controls instance, or an `AfterEvent` keeper reporting one.
-   */
-      (
-          this: void,
-          builder: Builder<TModel, TElt, TSharer>,
-      ) => Controls<TModel, TElt> | AfterEvent<[Controls<TModel, TElt>?]>;
-
+  export type Provider<
+    TModel = any,
+    TElt extends HTMLElement = HTMLElement,
+    TSharer extends object = object,
+  > =
+    /**
+     * @param builder - Form builder.
+     *
+     * @returns Either form controls instance, or an `AfterEvent` keeper reporting one.
+     */
+    (
+      this: void,
+      builder: Builder<TModel, TElt, TSharer>,
+    ) => Controls<TModel, TElt> | AfterEvent<[Controls<TModel, TElt>?]>;
 }
 
 /**
  * Form aspect.
  */
 interface Form$Aspect extends InAspect<Form | null, 'form'> {
-
   applyTo<TValue>(control: InControl<TValue>): Form$Applied<TValue>;
-
 }
 
 /**
  * A form aspect applied to control.
  */
-type Form$Applied<TValue> = InAspect.Applied<TValue, Form.Whole<TValue> | null, Form.Whole<any> | null>;
+type Form$Applied<TValue> = InAspect.Applied<
+  TValue,
+  Form.Whole<TValue> | null,
+  Form.Whole<any> | null
+>;
 
 declare module '@frontmeans/input-aspects' {
-
   export namespace InAspect.Application {
-
     export interface Map<TInstance, TValue> {
-
       /**
        * Form aspect application type.
        */
       form(): Form.Whole<TValue> | null;
-
     }
-
   }
-
 }

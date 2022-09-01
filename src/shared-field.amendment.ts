@@ -10,7 +10,15 @@ import {
   newAmendTarget,
 } from '@proc7ts/amend';
 import { Class } from '@proc7ts/primitives';
-import { Share, Shared, SharedAmendment, ShareLocator, shareLocator, ShareRef, TargetShare } from '@wesib/generic';
+import {
+  Share,
+  Shared,
+  SharedAmendment,
+  ShareLocator,
+  shareLocator,
+  ShareRef,
+  TargetShare,
+} from '@wesib/generic';
 import { ComponentClass } from '@wesib/wesib';
 import { Field } from './field';
 import { FieldName } from './field-name.amendment';
@@ -28,11 +36,10 @@ import { AeSharedFormUnit } from './shared-form-unit.amendment';
  * @typeParam TClass - Amended component class type.
  */
 export interface AeSharedField<
-    TField extends Field<TFieldValue>,
-    TFieldValue = Field.ValueType<TField>,
-    TClass extends ComponentClass = Class>
-    extends AeSharedFormUnit<TField, TFieldValue, Field.Controls<TFieldValue>, TClass> {
-
+  TField extends Field<TFieldValue>,
+  TFieldValue = Field.ValueType<TField>,
+  TClass extends ComponentClass = Class,
+> extends AeSharedFormUnit<TField, TFieldValue, Field.Controls<TFieldValue>, TClass> {
   /**
    * Target field share instance.
    */
@@ -47,7 +54,6 @@ export interface AeSharedField<
    * Predefined field name, or `null`/`undefined` when the field is not to be added to the {@link locateForm form}.
    */
   readonly name: string | null;
-
 }
 
 /**
@@ -61,18 +67,22 @@ export interface AeSharedField<
  * @typeParam TAmended - Amended field entity type.
  */
 export type SharedFieldAmendment<
-    TField extends Field<TFieldValue>,
-    TFieldValue = Field.ValueType<TField>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedField<TField, TFieldValue, TClass> =
-        AeSharedField<TField, TFieldValue, TClass>> =
-    MemberAmendment.ForBase<
-        AeClass<TClass>,
-        AeSharedField<TField, TFieldValue, TClass>,
-        TField | undefined,
-        TClass,
-        TField | undefined,
-        TAmended>;
+  TField extends Field<TFieldValue>,
+  TFieldValue = Field.ValueType<TField>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedField<TField, TFieldValue, TClass> = AeSharedField<
+    TField,
+    TFieldValue,
+    TClass
+  >,
+> = MemberAmendment.ForBase<
+  AeClass<TClass>,
+  AeSharedField<TField, TFieldValue, TClass>,
+  TField | undefined,
+  TClass,
+  TField | undefined,
+  TAmended
+>;
 /**
  * Creates an amendment (and decorator) of component member that {@link FieldShare shares} a form field.
  *
@@ -86,13 +96,17 @@ export type SharedFieldAmendment<
  * @return New field member amendment.
  */
 export function SharedField<
-    TField extends Field<TFieldValue>,
-    TFieldValue = Field.ValueType<TField>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedField<TField, TFieldValue, TClass> =
-        AeSharedField<TField, TFieldValue, TClass>>(
-    def?: SharedFieldDef<TField, TFieldValue>,
-    ...amendments: Amendment<TAmended>[]
+  TField extends Field<TFieldValue>,
+  TFieldValue = Field.ValueType<TField>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedField<TField, TFieldValue, TClass> = AeSharedField<
+    TField,
+    TFieldValue,
+    TClass
+  >,
+>(
+  def?: SharedFieldDef<TField, TFieldValue>,
+  ...amendments: Amendment<TAmended>[]
 ): SharedFieldAmendment<TField, TFieldValue, TClass, TAmended>;
 
 /**
@@ -108,26 +122,31 @@ export function SharedField<
  * @return Component property decorator.
  */
 export function SharedField<
-    TField extends Field<TFieldValue>,
-    TFieldValue = Field.ValueType<TField>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedField<TField, TFieldValue, TClass> =
-        AeSharedField<TField, TFieldValue, TClass>>(
-    ...amendments: Amendment<TAmended>[]
+  TField extends Field<TFieldValue>,
+  TFieldValue = Field.ValueType<TField>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedField<TField, TFieldValue, TClass> = AeSharedField<
+    TField,
+    TFieldValue,
+    TClass
+  >,
+>(
+  ...amendments: Amendment<TAmended>[]
 ): SharedFieldAmendment<TField, TFieldValue, TClass, TAmended>;
 
 export function SharedField<
-    TField extends Field<TFieldValue>,
-    TFieldValue = Field.ValueType<TField>,
-    TClass extends ComponentClass = Class,
-    TAmended extends AeSharedField<TField, TFieldValue, TClass> =
-        AeSharedField<TField, TFieldValue, TClass>>(
-    defOrAmendment:
-        | SharedFieldDef<TField, TFieldValue>
-        | Amendment<TAmended> = {},
-    ...amendments: Amendment<TAmended>[]
+  TField extends Field<TFieldValue>,
+  TFieldValue = Field.ValueType<TField>,
+  TClass extends ComponentClass = Class,
+  TAmended extends AeSharedField<TField, TFieldValue, TClass> = AeSharedField<
+    TField,
+    TFieldValue,
+    TClass
+  >,
+>(
+  defOrAmendment: SharedFieldDef<TField, TFieldValue> | Amendment<TAmended> = {},
+  ...amendments: Amendment<TAmended>[]
 ): SharedAmendment<TField, TClass, TAmended> {
-
   let def: SharedFieldDef<TField, TFieldValue>;
   let fieldName: string | undefined;
   let amender: Amender<TAmended>;
@@ -141,43 +160,34 @@ export function SharedField<
     amender = allAmender([...amendments, FieldName({ name: fieldName })]);
   }
 
-  const {
-    share = FieldShare as ShareRef<TField>,
-    form,
-  } = def;
+  const { share = FieldShare as ShareRef<TField>, form } = def;
   const locateForm$default = shareLocator(form, { share: FormShare });
 
-  return Shared<TField, TClass, TAmended>(
-      share,
-      baseTarget => {
-        amender(newAmendTarget({
-          base: {
-            ...baseTarget as TAmended,
-            locateForm: locateForm$default,
-            name: Field$name(baseTarget.key, fieldName),
-          },
-          amend<TBase extends TAmended, TExt>(
-              base: TBase,
-              request: AmendRequest<TBase, TExt> = {} as AmendRequest<TBase, TExt>,
-          ): () => AmendTarget.Draft<TBase & TExt> {
+  return Shared<TField, TClass, TAmended>(share, baseTarget => {
+    amender(
+      newAmendTarget({
+        base: {
+          ...(baseTarget as TAmended),
+          locateForm: locateForm$default,
+          name: Field$name(baseTarget.key, fieldName),
+        },
+        amend<TBase extends TAmended, TExt>(
+          base: TBase,
+          request: AmendRequest<TBase, TExt> = {} as AmendRequest<TBase, TExt>,
+        ): () => AmendTarget.Draft<TBase & TExt> {
+          const { locateForm = base.locateForm, name = base.name, ...baseRequest } = request;
 
-            const {
-              locateForm = base.locateForm,
-              name = base.name,
-              ...baseRequest
-            } = request;
+          const createBaseTarget = baseTarget.amend(baseRequest as AmendRequest<any>);
 
-            const createBaseTarget = baseTarget.amend(baseRequest as AmendRequest<any>);
-
-            return () => ({
+          return () => ({
               ...createBaseTarget(),
               locateForm,
               name,
             } as AmendTarget.Draft<TBase & TExt>);
-          },
-        }));
-      },
-  );
+        },
+      }),
+    );
+  });
 }
 
 /**
@@ -187,7 +197,6 @@ export function SharedField<
  * @typeParam TValue - Field value type.
  */
 export interface SharedFieldDef<TField extends Field<TValue>, TValue = Field.ValueType<TField>> {
-
   /**
    * Target field share.
    */
@@ -209,5 +218,4 @@ export interface SharedFieldDef<TField extends Field<TValue>, TValue = Field.Val
    * Equals to decorated property name when omitted.
    */
   readonly name?: string | undefined;
-
 }

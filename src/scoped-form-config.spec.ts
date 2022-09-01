@@ -5,16 +5,13 @@ import { Supply } from '@proc7ts/supply';
 import { ScopedFormConfig } from './scoped-form-config';
 
 describe('ScopedFormConfig', () => {
-
   const TestAspect__symbol: InAspect<TestAspect> = {
-
     applyTo<TValue>(_control: InControl<TValue>): InAspect.Applied<TValue, TestAspect> {
       return {
         instance: new TestAspect(),
         convertTo: noop,
       };
     },
-
   };
 
   class TestAspect {
@@ -35,7 +32,7 @@ describe('ScopedFormConfig', () => {
       return new Supply(() => this._it.splice(this._it.indexOf(value), 1));
     }
 
-  }
+}
 
   let control: InControl<string>;
 
@@ -144,10 +141,12 @@ describe('ScopedFormConfig', () => {
     });
   });
 
-  function createSetup(config: ScopedFormConfig<{ value: string }>): (control: InControl<string>) => Supply {
+  function createSetup(
+    config: ScopedFormConfig<{ value: string }>,
+  ): (control: InControl<string>) => Supply {
     return ScopedFormConfig.createSetup(
-        config,
-        ({ value = 'default' }: { value?: string } = {}) => control => control.aspect(TestAspect).setup({ value }),
+      config,
+      ({ value = 'default' }: { value?: string } = {}) => control => control.aspect(TestAspect).setup({ value }),
     );
   }
 });

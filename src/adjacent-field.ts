@@ -22,18 +22,19 @@ import { FormShare } from './form.share';
  * @typeParam TSharer - Adjacent field sharer component type.
  */
 export function adjacentField<
-    TValue,
-    TAdjacentTo extends FormUnit<unknown, TAdjusted>,
-    TAdjusted extends FormUnit.Controls<unknown> = FormUnit.ControlsType<TAdjacentTo>,
-    TSharer extends object = FormUnit.SharerType<TAdjacentTo>,
-    >(
-    controls: Field.Controls<TValue> | AdjacentField.Provider<TValue, TAdjacentTo, TAdjusted, TSharer>,
-    adjacentTo: ShareLocator.Mandatory<TAdjacentTo>,
+  TValue,
+  TAdjacentTo extends FormUnit<unknown, TAdjusted>,
+  TAdjusted extends FormUnit.Controls<unknown> = FormUnit.ControlsType<TAdjacentTo>,
+  TSharer extends object = FormUnit.SharerType<TAdjacentTo>,
+>(
+  controls:
+    | Field.Controls<TValue>
+    | AdjacentField.Provider<TValue, TAdjacentTo, TAdjusted, TSharer>,
+  adjacentTo: ShareLocator.Mandatory<TAdjacentTo>,
 ): Field<TValue, TSharer> {
-  return new Field(AdjacentField$provider(
-      valueRecipe(controls),
-      shareLocator(adjacentTo, { local: 'too' }),
-  ));
+  return new Field(
+    AdjacentField$provider(valueRecipe(controls), shareLocator(adjacentTo, { local: 'too' })),
+  );
 }
 
 /**
@@ -46,10 +47,10 @@ export function adjacentField<
  * default. Defaults to {@link FieldShare}.
  */
 export function adjacentToField<TValue, TSharer extends object = any>(
-    controls:
-        | Field.Controls<TValue>
-        | AdjacentField.Provider<TValue, Field<unknown>, Field.Controls<unknown>, TSharer>,
-    adjacentTo: ShareLocator.Mandatory<Field<unknown>> = FieldShare,
+  controls:
+    | Field.Controls<TValue>
+    | AdjacentField.Provider<TValue, Field<unknown>, Field.Controls<unknown>, TSharer>,
+  adjacentTo: ShareLocator.Mandatory<Field<unknown>> = FieldShare,
 ): Field<TValue, TSharer> {
   return adjacentField(controls, adjacentTo);
 }
@@ -64,16 +65,15 @@ export function adjacentToField<TValue, TSharer extends object = any>(
  * Defaults to {@link FormShare}.
  */
 export function adjacentToForm<TValue, TSharer extends object = any>(
-    controls:
-        | Field.Controls<TValue>
-        | AdjacentField.Provider<TValue, Form<unknown>, Form.Body<unknown>, TSharer>,
-    adjacentTo: ShareLocator.Mandatory<Form<unknown>> = FormShare,
+  controls:
+    | Field.Controls<TValue>
+    | AdjacentField.Provider<TValue, Form<unknown>, Form.Body<unknown>, TSharer>,
+  adjacentTo: ShareLocator.Mandatory<Form<unknown>> = FormShare,
 ): Field<TValue, TSharer> {
   return adjacentField(controls, adjacentTo);
 }
 
 export namespace AdjacentField {
-
   /**
    * Adjacent field builder.
    *
@@ -83,12 +83,11 @@ export namespace AdjacentField {
    * @typeParam TSharer - Adjacent field sharer component type.
    */
   export interface Builder<
-      TValue,
-      TAdjacentTo extends FormUnit<unknown, TAdjusted>,
-      TAdjusted extends FormUnit.Controls<unknown> = FormUnit.ControlsType<TAdjacentTo>,
-      TSharer extends object = any,
-      > extends Field.Builder<TValue, TSharer> {
-
+    TValue,
+    TAdjacentTo extends FormUnit<unknown, TAdjusted>,
+    TAdjusted extends FormUnit.Controls<unknown> = FormUnit.ControlsType<TAdjacentTo>,
+    TSharer extends object = any,
+  > extends Field.Builder<TValue, TSharer> {
     /**
      * Sharer component context.
      */
@@ -113,7 +112,6 @@ export namespace AdjacentField {
      * Adjusted form unit control.
      */
     readonly adjusted: TAdjusted;
-
   }
 
   /**
@@ -125,42 +123,48 @@ export namespace AdjacentField {
    * @typeParam TSharer - Adjacent field sharer component type.
    */
   export type Provider<
-      TValue,
-      TAdjacentTo extends FormUnit<unknown, TAdjusted>,
-      TAdjusted extends FormUnit.Controls<unknown> = FormUnit.ControlsType<TAdjacentTo>,
-      TSharer extends object = any,
-      > =
-  /**
-   * @param builder - Adjacent field builder.
-   *
-   * @returns Either field controls instance, or an `AfterEvent` keeper reporting one.
-   */
-      (
-          this: void,
-          builder: Builder<TValue, TAdjacentTo, TAdjusted, TSharer>,
-      ) => Field.Controls<TValue> | AfterEvent<[Field.Controls<TValue>?]>;
-
-}
-
-function AdjacentField$provider<
     TValue,
     TAdjacentTo extends FormUnit<unknown, TAdjusted>,
     TAdjusted extends FormUnit.Controls<unknown> = FormUnit.ControlsType<TAdjacentTo>,
-    TSharer extends object = any>(
-    provider: AdjacentField.Provider<TValue, TAdjacentTo, TAdjusted, TSharer>,
-    adjacentLocator: ShareLocator.Fn<TAdjacentTo>,
+    TSharer extends object = any,
+  > =
+    /**
+     * @param builder - Adjacent field builder.
+     *
+     * @returns Either field controls instance, or an `AfterEvent` keeper reporting one.
+     */
+    (
+      this: void,
+      builder: Builder<TValue, TAdjacentTo, TAdjusted, TSharer>,
+    ) => Field.Controls<TValue> | AfterEvent<[Field.Controls<TValue>?]>;
+}
+
+function AdjacentField$provider<
+  TValue,
+  TAdjacentTo extends FormUnit<unknown, TAdjusted>,
+  TAdjusted extends FormUnit.Controls<unknown> = FormUnit.ControlsType<TAdjacentTo>,
+  TSharer extends object = any,
+>(
+  provider: AdjacentField.Provider<TValue, TAdjacentTo, TAdjusted, TSharer>,
+  adjacentLocator: ShareLocator.Fn<TAdjacentTo>,
 ): Field.Provider<TValue, TSharer> {
   return builder => adjacentLocator(builder.sharer).do(
-      digAfter((adjacentTo?: TAdjacentTo, _sharer?): AfterEvent<[Field.Controls<TValue>?]> => adjacentTo
-          ? adjacentTo.read.do(
-              digAfter((adjusted?: TAdjusted): AfterEvent<[Field.Controls<TValue>?]> => adjusted
-                  ? afterValue(provider({
-                    ...builder,
-                    adjacentTo,
-                    adjusted,
-                  }))
-                  : afterThe()),
-          )
-          : afterThe()),
-  );
+      digAfter(
+        (adjacentTo?: TAdjacentTo, _sharer?): AfterEvent<[Field.Controls<TValue>?]> => adjacentTo
+            ? adjacentTo.read.do(
+                digAfter(
+                  (adjusted?: TAdjusted): AfterEvent<[Field.Controls<TValue>?]> => adjusted
+                      ? afterValue(
+                          provider({
+                            ...builder,
+                            adjacentTo,
+                            adjusted,
+                          }),
+                        )
+                      : afterThe(),
+                ),
+              )
+            : afterThe(),
+      ),
+    );
 }

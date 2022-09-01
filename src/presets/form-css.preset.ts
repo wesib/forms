@@ -30,53 +30,38 @@ export class FormCssPreset extends AbstractFormPreset {
    */
   constructor(options: FormCssPreset.Options = {}) {
     super();
-    this._info = ScopedFormConfig.createSetup(
-        options.info,
-        opts => {
+    this._info = ScopedFormConfig.createSetup(options.info, opts => {
+      const src = inCssInfo(opts);
 
-          const src = inCssInfo(opts);
+      return control => control.aspect(InCssClasses).add(src);
+    });
+    this._error = ScopedFormConfig.createSetup(options.error, opts => {
+      const src = inCssError(opts);
 
-          return control => control.aspect(InCssClasses).add(src);
-        },
-    );
-    this._error = ScopedFormConfig.createSetup(
-        options.error,
-        opts => {
-
-          const src = inCssError(opts);
-
-          return control => control.aspect(InCssClasses).add(src);
-        },
-    );
+      return control => control.aspect(InCssClasses).add(src);
+    });
   }
 
   override setupField<TValue, TSharer extends object>(
-      builder: Field.Builder<TValue, TSharer>,
+    builder: Field.Builder<TValue, TSharer>,
   ): void {
     builder.control.setup(this._info).setup(this._error);
   }
 
   override setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
-      builder: Form.Builder<TModel, TElt, TSharer>,
+    builder: Form.Builder<TModel, TElt, TSharer>,
   ): void {
     builder.control.setup(this._info);
-    builder.element.setup(
-        InCssClasses,
-        (css, element) => css.add(
-            element.aspect(Form)!.control.aspect(InCssClasses),
-        ),
-    );
+    builder.element.setup(InCssClasses, (css, element) => css.add(element.aspect(Form)!.control.aspect(InCssClasses)));
   }
 
 }
 
 export namespace FormCssPreset {
-
   /**
    * Form CSS preset options.
    */
   export interface Options {
-
     /**
      * CSS info options.
      *
@@ -90,7 +75,5 @@ export namespace FormCssPreset {
      * `false` to disable.
      */
     readonly error?: ScopedFormConfig<Parameters<typeof inCssError>[0]> | undefined;
-
   }
-
 }

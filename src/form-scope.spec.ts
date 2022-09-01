@@ -5,16 +5,13 @@ import { Supply } from '@proc7ts/supply';
 import { FormScope } from './form-scope';
 
 describe('FormScope', () => {
-
   const TestAspect__symbol: InAspect<TestAspect> = {
-
     applyTo<TValue>(_control: InControl<TValue>): InAspect.Applied<TValue, TestAspect> {
       return {
         instance: new TestAspect(),
         convertTo: noop,
       };
     },
-
   };
 
   class TestAspect {
@@ -35,7 +32,7 @@ describe('FormScope', () => {
       return new Supply(() => --this._it);
     }
 
-  }
+}
 
   let control: InControl<string>;
 

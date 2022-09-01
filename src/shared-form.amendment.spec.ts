@@ -9,7 +9,6 @@ import { SharedForm } from './shared-form.amendment';
 
 describe('@SharedForm', () => {
   it('shares form', async () => {
-
     const hasControls = trackValue(false);
 
     @Component('test-element', { extend: { type: MockElement } })
@@ -20,27 +19,23 @@ describe('@SharedForm', () => {
 
       constructor(context: ComponentContext) {
         this.form = new Form<any>(builder => {
-
           const control = builder.control.build(opts => inGroup({}, opts));
 
           return hasControls.read.do(
-              mapAfter(has => has
-                  ? {
+            mapAfter(has => has
+                ? {
                     control,
-                    element: builder.element.build(opts => inFormElement(
-                        context.element,
-                        {
-                          ...opts,
-                          form: control,
-                        },
-                    )),
+                    element: builder.element.build(opts => inFormElement(context.element, {
+                        ...opts,
+                        form: control,
+                      })),
                   }
-                  : undefined),
+                : undefined),
           );
         });
       }
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;

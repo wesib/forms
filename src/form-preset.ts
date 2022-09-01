@@ -5,13 +5,13 @@ import { Field } from './field';
 import { Form } from './form';
 
 function FormPreset$noFieldSetup<TValue, TSharer extends object>(
-    _builder: Field.Builder<TValue, TSharer>,
+  _builder: Field.Builder<TValue, TSharer>,
 ): void {
   // No field setup
 }
 
 function FormPreset$noFormSetup<TModel, TElt extends HTMLElement, TSharer extends object>(
-    _builder: Form.Builder<TModel, TElt, TSharer>,
+  _builder: Form.Builder<TModel, TElt, TSharer>,
 ): void {
   // No form setup
 }
@@ -23,15 +23,12 @@ function FormPreset$noFormSetup<TModel, TElt extends HTMLElement, TSharer extend
  * and fields. They would be combined into single preset available in component context.
  */
 export interface FormPreset {
-
   /**
    * Sets up form field controls.
    *
    * @param builder - Target field builder.
    */
-  setupField<TValue, TSharer extends object>(
-      builder: Field.Builder<TValue, TSharer>,
-  ): void;
+  setupField<TValue, TSharer extends object>(builder: Field.Builder<TValue, TSharer>): void;
 
   /**
    * Sets up form controls.
@@ -39,9 +36,8 @@ export interface FormPreset {
    * @param builder - Target form builder.
    */
   setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
-      builder: Form.Builder<TModel, TElt, TSharer>,
+    builder: Form.Builder<TModel, TElt, TSharer>,
   ): void;
-
 }
 
 /**
@@ -53,33 +49,27 @@ export interface FormPreset {
  * - `InNamespaceAliaser` set to `NamespaceAliaser.
  */
 export const FormPreset: FormPreset.Static = {
-
-  perContext: (/*#__PURE__*/ cxDynamic<FormPreset.Tracker, FormPreset.Spec, FormPreset>({
+  perContext: /*#__PURE__*/ cxDynamic<FormPreset.Tracker, FormPreset.Spec, FormPreset>({
     create: (specs, _target) => FormPreset.combine(...specs, DefaultFormPreset),
     byDefault: _target => DefaultFormPreset,
     assign: ({ get, to, track }, _target) => {
-
       const preset: FormPreset.Tracker = {
-
         track: afterEventBy(receiver => track(sendEventsTo(receiver), receiver)),
 
-        setupField<TValue, TSharer extends object>(
-            builder: Field.Builder<TValue, TSharer>,
-        ): void {
+        setupField<TValue, TSharer extends object>(builder: Field.Builder<TValue, TSharer>): void {
           get().setupField(builder);
         },
 
         setupForm<TModel, TElt extends HTMLElement, TSharer extends object>(
-            builder: Form.Builder<TModel, TElt, TSharer>,
+          builder: Form.Builder<TModel, TElt, TSharer>,
         ): void {
           get().setupForm(builder);
         },
-
       };
 
       return receiver => to((_, by) => receiver(preset, by));
     },
-  })),
+  }),
 
   /**
    * Combines form preset specifiers.
@@ -96,21 +86,17 @@ export const FormPreset: FormPreset.Static = {
   },
 
   toString: () => '[FormPreset]',
-
 };
 
 export namespace FormPreset {
-
   /**
    * A tracker of form presets provided as component context assets.
    */
   export interface Tracker extends FormPreset {
-
     /**
      * An `AfterEvent` keeper of {@link Static.combine combined} form preset.
      */
     readonly track: AfterEvent<[FormPreset]>;
-
   }
 
   /**
@@ -119,15 +105,12 @@ export namespace FormPreset {
    * Contains a partial form preset implementation.
    */
   export interface Spec {
-
     /**
      * Sets up form field controls.
      *
      * @param builder - Target field builder.
      */
-    setupField?<TValue, TSharer extends object>(
-        builder: Field.Builder<TValue, TSharer>,
-    ): void;
+    setupField?<TValue, TSharer extends object>(builder: Field.Builder<TValue, TSharer>): void;
 
     /**
      * Sets up form controls.
@@ -135,16 +118,14 @@ export namespace FormPreset {
      * @param builder - Target form builder.
      */
     setupForm?<TModel, TElt extends HTMLElement, TSharer extends object>(
-        builder: Form.Builder<TModel, TElt, TSharer>,
+      builder: Form.Builder<TModel, TElt, TSharer>,
     ): void;
-
   }
 
   /**
    * Static `FormPreset` instance type.
    */
   export interface Static extends CxEntry<FormPreset.Tracker, FormPreset.Spec> {
-
     /**
      * Combines form preset specifiers.
      *
@@ -153,43 +134,37 @@ export namespace FormPreset {
      * @returns Form preset rules instance combining the given specifiers.
      */
     combine(this: void, ...specs: FormPreset.Spec[]): FormPreset;
-
   }
-
 }
 
 function FormPreset$setupField(
-    specs: readonly FormPreset.Spec[],
-): <TValue, TSharer extends object>(
-    builder: Field.Builder<TValue, TSharer>,
-) => void {
+  specs: readonly FormPreset.Spec[],
+): <TValue, TSharer extends object>(builder: Field.Builder<TValue, TSharer>) => void {
   return specs.reduce(
-      (prev, spec) => spec.setupField
-          ? <TValue, TSharer extends object>(
-              builder: Field.Builder<TValue, TSharer>,
-          ): void => {
+    (prev, spec) => spec.setupField
+        ? <TValue, TSharer extends object>(builder: Field.Builder<TValue, TSharer>): void => {
             prev(builder);
             spec.setupField!(builder);
           }
-          : prev,
-      FormPreset$noFieldSetup,
+        : prev,
+    FormPreset$noFieldSetup,
   );
 }
 
 function FormPreset$setupForm(
-    specs: readonly FormPreset.Spec[],
+  specs: readonly FormPreset.Spec[],
 ): <TModel, TElt extends HTMLElement, TSharer extends object>(
-    builder: Form.Builder<TModel, TElt, TSharer>,
+  builder: Form.Builder<TModel, TElt, TSharer>,
 ) => void {
   return specs.reduce(
-      (prev, spec) => spec.setupForm
-          ? <TModel, TElt extends HTMLElement, TSharer extends object>(
-              builder: Form.Builder<TModel, TElt, TSharer>,
+    (prev, spec) => spec.setupForm
+        ? <TModel, TElt extends HTMLElement, TSharer extends object>(
+            builder: Form.Builder<TModel, TElt, TSharer>,
           ): void => {
             prev(builder);
             spec.setupForm!(builder);
           }
-          : prev,
-      FormPreset$noFormSetup,
+        : prev,
+    FormPreset$noFormSetup,
   );
 }

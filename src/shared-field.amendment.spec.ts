@@ -21,7 +21,6 @@ import { SharedField } from './shared-field.amendment';
 import { SharedForm } from './shared-form.amendment';
 
 describe('@SharedField', () => {
-
   let doc: Document;
 
   beforeEach(() => {
@@ -29,14 +28,13 @@ describe('@SharedField', () => {
   });
 
   it('shares field', async () => {
-
     @Component('test-element', { extend: { type: MockElement } })
     class TestComponent {
 
       @SharedField()
       readonly field = new Field<string>({ control: inValue('test') });
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -44,7 +42,6 @@ describe('@SharedField', () => {
     expect(await context.get(FieldShare.share)).toBeInstanceOf(Field);
   });
   it('shares provided field', async () => {
-
     const createControl = jest.fn(valueProvider({ control: inValue('test') }));
 
     @Component('test-element', { extend: { type: MockElement } })
@@ -53,7 +50,7 @@ describe('@SharedField', () => {
       @SharedField()
       readonly field = new Field<string>(createControl);
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -64,7 +61,6 @@ describe('@SharedField', () => {
     expect(createControl).toHaveBeenCalledTimes(1);
   });
   it('shares field provided by controls keeper', async () => {
-
     const createControl = jest.fn(() => afterThe({ control: inValue('test') }));
 
     @Component('test-element', { extend: { type: MockElement } })
@@ -73,7 +69,7 @@ describe('@SharedField', () => {
       @SharedField()
       readonly field = new Field<string>(createControl);
 
-    }
+}
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
@@ -84,7 +80,6 @@ describe('@SharedField', () => {
     expect(control?.it).toBe('test');
   });
   it('adds field to enclosing form', async () => {
-
     const { formCtx, fieldCtx } = await bootstrap();
 
     const form = await formCtx.get(FormShare.share);
@@ -94,19 +89,15 @@ describe('@SharedField', () => {
     expect(controls.get('field')).toBe(field!.control);
   });
   it('adds field to enclosing form with custom name', async () => {
-
-    @Component(
-        'field-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('field-element', {
+      extend: { type: MockElement },
+    })
     class FieldComponent {
 
       @SharedField({ name: 'customField' })
       readonly field = new Field<string>({ control: inValue('test') });
 
-    }
+}
 
     const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
@@ -118,19 +109,15 @@ describe('@SharedField', () => {
     expect(controls.get('customField')).toBe(field!.control);
   });
   it('does not add field to enclosing form with empty name', async () => {
-
-    @Component(
-        'field-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('field-element', {
+      extend: { type: MockElement },
+    })
     class FieldComponent {
 
       @SharedField({ name: '' })
       readonly field = new Field<string>({ control: inValue('test') });
 
-    }
+}
 
     const { formCtx } = await bootstrap(FieldComponent);
 
@@ -140,21 +127,17 @@ describe('@SharedField', () => {
     expect([...controls]).toHaveLength(0);
   });
   it('does not add a field with symbol key to enclosing form', async () => {
-
     const symbol = Symbol('test');
 
-    @Component(
-        'field-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('field-element', {
+      extend: { type: MockElement },
+    })
     class FieldComponent {
 
       @SharedField()
       readonly [symbol] = new Field<string>({ control: inValue('test') });
 
-    }
+}
 
     const { formCtx } = await bootstrap(FieldComponent);
 
@@ -164,13 +147,9 @@ describe('@SharedField', () => {
     expect([...controls]).toHaveLength(0);
   });
   it('does not add a field to non-group form', async () => {
-
-    @Component(
-        'form-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('form-element', {
+      extend: { type: MockElement },
+    })
     class FormComponent {
 
       @SharedForm()
@@ -180,7 +159,7 @@ describe('@SharedField', () => {
         this.form = new Form(Form.forElement(inList([]), context.element));
       }
 
-    }
+}
 
     const { formCtx } = await bootstrap(undefined, FormComponent);
 
@@ -190,19 +169,15 @@ describe('@SharedField', () => {
     expect([...controls]).toHaveLength(0);
   });
   it('does not add a field to missing form', async () => {
-
-    @Component(
-        'form-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('form-element', {
+      extend: { type: MockElement },
+    })
     class FormComponent {
 
       @SharedForm()
       form?: Form | undefined;
 
-    }
+}
 
     const { formCtx, fieldCtx } = await bootstrap(undefined, FormComponent);
     const field = (await fieldCtx.get(FieldShare.share))!;
@@ -213,12 +188,9 @@ describe('@SharedField', () => {
     expect([...(await field.control!.aspect(InParents).read)]).toHaveLength(1);
   });
   it('applies additional amendments', async () => {
-    @Component(
-        'field-element',
-        {
-          extend: { type: MockElement },
-        },
-    )
+    @Component('field-element', {
+      extend: { type: MockElement },
+    })
     class FieldComponent {
 
       @SharedField(({ amend }) => {
@@ -226,7 +198,7 @@ describe('@SharedField', () => {
       })
       readonly field = new Field<string>({ control: inValue('test') });
 
-    }
+}
 
     const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
@@ -240,24 +212,20 @@ describe('@SharedField', () => {
 
   describe('FieldName', () => {
     it('adds field to enclosing form', async () => {
-
-      @Component(
-          'field-element',
-          {
-            extend: { type: MockElement },
-          },
-      )
+      @Component('field-element', {
+        extend: { type: MockElement },
+      })
       class FieldComponent {
 
         @SharedField(
-            {
-              name: '',
-            },
-            FieldName(),
+          {
+            name: '',
+          },
+          FieldName(),
         )
         readonly field = new Field<string>({ control: inValue('test') });
 
-      }
+}
 
       const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
@@ -268,19 +236,15 @@ describe('@SharedField', () => {
       expect(controls.get('field')).toBe(field!.control);
     });
     it('adds field to enclosing form again', async () => {
-
-      @Component(
-          'field-element',
-          {
-            extend: { type: MockElement },
-          },
-      )
+      @Component('field-element', {
+        extend: { type: MockElement },
+      })
       class FieldComponent {
 
         @SharedField(FieldName({ name: 'customName' }))
         readonly field = new Field<string>({ control: inValue('test') });
 
-      }
+}
 
       const { formCtx, fieldCtx } = await bootstrap(FieldComponent);
 
@@ -292,13 +256,9 @@ describe('@SharedField', () => {
       expect(controls.get('customName')).toBe(field!.control);
     });
     it('adds nested form to enclosing one', async () => {
-
-      @Component(
-          'sub-form-element',
-          {
-            extend: { type: MockElement },
-          },
-      )
+      @Component('sub-form-element', {
+        extend: { type: MockElement },
+      })
       class SubFormComponent {
 
         @SharedForm(FormName())
@@ -308,7 +268,7 @@ describe('@SharedField', () => {
           this.subForm = new Form(() => Form.forElement(inList<string>([]), context.element));
         }
 
-      }
+}
 
       const { formCtx, fieldCtx } = await bootstrap(SubFormComponent);
 
@@ -321,20 +281,16 @@ describe('@SharedField', () => {
   });
 
   async function bootstrap(
-      componentType?: ComponentClass,
-      formComponentType?: ComponentClass,
+    componentType?: ComponentClass,
+    formComponentType?: ComponentClass,
   ): Promise<{
     formCtx: ComponentContext;
     fieldCtx: ComponentContext;
   }> {
-
     if (!formComponentType) {
-      @Component(
-          'form-element',
-          {
-            extend: { type: MockElement },
-          },
-      )
+      @Component('form-element', {
+        extend: { type: MockElement },
+      })
       class FormComponent {
 
         @SharedForm()
@@ -344,24 +300,21 @@ describe('@SharedField', () => {
           this.form = new Form(Form.forElement(inGroup({}), context.element));
         }
 
-      }
+}
 
       formComponentType = FormComponent;
     }
 
     if (!componentType) {
-      @Component(
-          'field-element',
-          {
-            extend: { type: MockElement },
-          },
-      )
+      @Component('field-element', {
+        extend: { type: MockElement },
+      })
       class FieldComponent {
 
         @SharedField()
         readonly field = new Field<string>(() => ({ control: inValue('test') }));
 
-      }
+}
 
       componentType = FieldComponent;
     }

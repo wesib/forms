@@ -6,7 +6,6 @@ import { MockElement, testElement } from '@wesib/wesib/testing';
 import { Field } from './field';
 
 describe('Field', () => {
-
   let field: Field<string>;
 
   beforeEach(() => {
@@ -14,16 +13,13 @@ describe('Field', () => {
   });
 
   describe('controls', () => {
-
     let context: ComponentContext;
 
     beforeEach(async () => {
-
       @Component({
         extend: { type: MockElement },
       })
-      class TestComponent {
-      }
+      class TestComponent {}
 
       const element: ComponentElement = new (await testElement(TestComponent))();
 
@@ -31,7 +27,6 @@ describe('Field', () => {
     });
 
     it('de-duplicated', () => {
-
       const controls = trackValue<Field.Controls<string>>();
 
       field = new Field(() => controls.read);
@@ -73,5 +68,4 @@ describe('Field', () => {
       expect(() => field.sharer).toThrow(new TypeError('[Field] is not properly shared yet'));
     });
   });
-
 });

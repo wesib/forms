@@ -3,12 +3,9 @@ import { FeatureDef__symbol } from '@wesib/wesib';
 import { AbstractFormPreset } from './abstract-form-preset';
 
 describe('AbstractFormPreset', () => {
+  class TestFormPreset extends AbstractFormPreset {}
 
-  class TestFormPreset extends AbstractFormPreset {
-  }
-
-  class TestFormPreset2 extends TestFormPreset {
-  }
+  class TestFormPreset2 extends TestFormPreset {}
 
   describe('feature definition', () => {
     it('is created per preset', () => {
@@ -32,5 +29,4 @@ describe('AbstractFormPreset', () => {
       expect(new TestFormPreset().setupForm).toBeUndefined();
     });
   });
-
 });

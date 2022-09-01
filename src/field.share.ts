@@ -2,7 +2,7 @@ import { Class } from '@proc7ts/primitives';
 import { Share } from '@wesib/generic';
 import { Field } from './field';
 
-const FieldShare$map = (/*#__PURE__*/ new WeakMap<Class, FieldShare<any>>());
+const FieldShare$map = /*#__PURE__*/ new WeakMap<Class, FieldShare<any>>();
 
 /**
  * A kind of component share containing a {@link Field form field}.
@@ -18,7 +18,6 @@ export class FieldShare<TValue = any> extends Share<Field<TValue>> {
    * Default field share instance.
    */
   static get share(): FieldShare {
-
     let instance = FieldShare$map.get(this);
 
     if (!instance) {

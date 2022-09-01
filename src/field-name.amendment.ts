@@ -26,12 +26,11 @@ import { AeSharedForm } from './shared-form.amendment';
  * @returns Shared form definition builder.
  */
 export function FormName<
-    TForm extends Form<TModel, TElt>,
-    TModel = Form.ModelType<TForm>,
-    TElt extends HTMLElement = Form.ElementType<TForm>,
-    TClass extends ComponentClass = Class>(
-    def?: FieldNameDef,
-): Amendment<AeSharedForm<TForm, TModel, TElt, TClass>> {
+  TForm extends Form<TModel, TElt>,
+  TModel = Form.ModelType<TForm>,
+  TElt extends HTMLElement = Form.ElementType<TForm>,
+  TClass extends ComponentClass = Class,
+>(def?: FieldNameDef): Amendment<AeSharedForm<TForm, TModel, TElt, TClass>> {
   return FormUnitName<TForm, TModel, Form.Controls<TModel, TElt>, TClass>(def);
 }
 
@@ -46,29 +45,20 @@ export function FormName<
  * @returns Shared field definition builder.
  */
 export function FieldName<
-    TField extends Field<TFieldValue>,
-    TFieldValue = Field.ValueType<TField>,
-    TClass extends ComponentClass = Class>(
-    def: FieldNameDef = {},
-): Amendment<AeSharedField<TField, TFieldValue, TClass>> {
+  TField extends Field<TFieldValue>,
+  TFieldValue = Field.ValueType<TField>,
+  TClass extends ComponentClass = Class,
+>(def: FieldNameDef = {}): Amendment<AeSharedField<TField, TFieldValue, TClass>> {
   return FormUnitName<TField, TFieldValue, Field.Controls<TFieldValue>, TClass>(def);
 }
 
 function FormUnitName<
-    TUnit extends FormUnit<TUnitValue, TControls, any>,
-    TUnitValue,
-    TControls extends FormUnit.Controls<TUnitValue>,
-    TClass extends ComponentClass = Class>(
-    def: FieldNameDef = {},
-): Amendment<AeSharedFormUnit<TUnit, TUnitValue, TControls, TClass>> {
-  return ({
-    key,
-    share,
-    locateForm: defaultForm,
-    name: defaultName,
-    amend,
-  }) => {
-
+  TUnit extends FormUnit<TUnitValue, TControls, any>,
+  TUnitValue,
+  TControls extends FormUnit.Controls<TUnitValue>,
+  TClass extends ComponentClass = Class,
+>(def: FieldNameDef = {}): Amendment<AeSharedFormUnit<TUnit, TUnitValue, TControls, TClass>> {
+  return ({ key, share, locateForm: defaultForm, name: defaultName, amend }) => {
     const { name = defaultName } = def;
     let fieldName: string;
 
@@ -77,7 +67,6 @@ function FormUnitName<
     } else if (name != null) {
       return; // Empty field name. Do not ad it to form.
     } else {
-
       const autoName = Field$nameByKey(key);
 
       if (!autoName) {
@@ -94,26 +83,27 @@ function FormUnitName<
         setup(setup) {
           setup.whenComponent(context => {
             afterAll({
-              unit: context.get(share).do(
-                  digAfter_(asis, (): [TControls?] => []),
-              ),
+              unit: context.get(share).do(digAfter_(asis, (): [TControls?] => [])),
               form: locateForm(context).do(
-                  digAfter_((form?, _sharer?) => form, (): [FormUnit.Controls<any>?] => []),
+                digAfter_(
+                  (form?, _sharer?) => form,
+                  (): [FormUnit.Controls<any>?] => [],
+                ),
               ),
             }).do(
-                consumeEvents(({ unit: [field], form: [form] }): Supply | undefined => {
-                  if (!form || !field) {
-                    return;
-                  }
+              consumeEvents(({ unit: [field], form: [form] }): Supply | undefined => {
+                if (!form || !field) {
+                  return;
+                }
 
-                  const group = form.control.aspect(InGroup);
+                const group = form.control.aspect(InGroup);
 
-                  if (!group) {
-                    return;
-                  }
+                if (!group) {
+                  return;
+                }
 
-                  return group.controls.set(fieldName, field.control);
-                }),
+                return group.controls.set(fieldName, field.control);
+              }),
             );
           });
         },
@@ -126,7 +116,6 @@ function FormUnitName<
  * Form field naming definition.
  */
 export interface FieldNameDef {
-
   /**
    * A locator of form unit to add the field to.
    *
@@ -143,5 +132,4 @@ export interface FieldNameDef {
    * Either {@link SharedFieldDef.name predefined}, or property name is used when omitted.
    */
   readonly name?: string | undefined;
-
 }
