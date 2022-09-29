@@ -69,7 +69,9 @@ describe('@OnSubmit', () => {
 
     await bootstrap(onSubmit, { form: () => afterThe() });
     formElement.requestSubmit();
-    expect(defaultSubmit).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'submit' }));
+    expect(defaultSubmit).toHaveBeenLastCalledWith(
+      expect.objectContaining({ type: 'submit' }) as unknown as Event,
+    );
     expect(onSubmit).not.toHaveBeenCalled();
   });
 

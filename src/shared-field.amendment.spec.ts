@@ -1,4 +1,12 @@
-import { InGroup, inGroup, inList, InList, InParents, inValue } from '@frontmeans/input-aspects';
+import {
+  InControl,
+  InGroup,
+  inGroup,
+  inList,
+  InList,
+  InParents,
+  inValue,
+} from '@frontmeans/input-aspects';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { afterThe } from '@proc7ts/fun-events';
 import { valueProvider } from '@proc7ts/primitives';
@@ -42,7 +50,9 @@ describe('@SharedField', () => {
     expect(await context.get(FieldShare.share)).toBeInstanceOf(Field);
   });
   it('shares provided field', async () => {
-    const createControl = jest.fn(valueProvider({ control: inValue('test') }));
+    const createControl = jest.fn<Field.Provider<string, object>>(
+      valueProvider({ control: inValue('test') }),
+    );
 
     @Component('test-element', { extend: { type: MockElement } })
     class TestComponent {
@@ -54,14 +64,16 @@ describe('@SharedField', () => {
 
     const element: ComponentElement = new (await testElement(TestComponent))();
     const context = await ComponentSlot.of(element).whenReady;
-    const { control } = (await context.get(FieldShare.share))!;
+    const { control }: { control?: InControl<string> } = (await context.get(FieldShare.share))!;
 
-    expect(createControl).toHaveBeenCalledWith(expect.objectContaining({ sharer: context }));
-    expect(createControl).toHaveReturnedWith({ control });
+    expect(createControl).toHaveBeenCalledWith(
+      expect.objectContaining({ sharer: context }) as unknown as Field.Builder<string, object>,
+    );
+    expect(createControl).toHaveReturnedWith({ control: control! });
     expect(createControl).toHaveBeenCalledTimes(1);
   });
   it('shares field provided by controls keeper', async () => {
-    const createControl = jest.fn(() => afterThe({ control: inValue('test') }));
+    const createControl = jest.fn<Field.Provider<string, object>>(() => afterThe({ control: inValue('test') }));
 
     @Component('test-element', { extend: { type: MockElement } })
     class TestComponent {
@@ -75,7 +87,9 @@ describe('@SharedField', () => {
     const context = await ComponentSlot.of(element).whenReady;
     const { control } = (await context.get(FieldShare.share))!;
 
-    expect(createControl).toHaveBeenCalledWith(expect.objectContaining({ sharer: context }));
+    expect(createControl).toHaveBeenCalledWith(
+      expect.objectContaining({ sharer: context }) as unknown as Field.Builder<string, object>,
+    );
     expect(createControl).toHaveBeenCalledTimes(1);
     expect(control?.it).toBe('test');
   });

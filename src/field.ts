@@ -138,17 +138,14 @@ export namespace Field {
    *
    * @typeParam TValue - Field value type.
    * @typeParam TSharer - Field sharer component type.
+   * @param builder - Field builder.
+   *
+   * @returns Either field controls instance, or an `AfterEvent` keeper reporting one.
    */
-  export type Provider<TValue, TSharer extends object = any> =
-    /**
-     * @param builder - Field builder.
-     *
-     * @returns Either field controls instance, or an `AfterEvent` keeper reporting one.
-     */
-    (
-      this: void,
-      builder: Builder<TValue, TSharer>,
-    ) => Controls<TValue> | AfterEvent<[Controls<TValue>?]>;
+  export type Provider<TValue, TSharer extends object = any> = (
+    this: void,
+    builder: Builder<TValue, TSharer>,
+  ) => Controls<TValue> | AfterEvent<[Controls<TValue>?]>;
 }
 
 function Field$provider<TValue, TSharer extends object>(
